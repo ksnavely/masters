@@ -1,57 +1,8 @@
 
-%% bare_jrnl.tex
-%% V1.4
-%% 2012/12/27
-%% by Michael Shell
-%% see http://www.michaelshell.org/
-%% for current contact information.
+%% ksnavely_mjdb.tex
+%% 2013
+%% by Kyle Snavely
 %%
-%% This is a skeleton file demonstrating the use of IEEEtran.cls
-%% (requires IEEEtran.cls version 1.8 or later) with an IEEE journal paper.
-%%
-%% Support sites:
-%% http://www.michaelshell.org/tex/ieeetran/
-%% http://www.ctan.org/tex-archive/macros/latex/contrib/IEEEtran/
-%% and
-%% http://www.ieee.org/
-
-
-
-% *** Authors should verify (and, if needed, correct) their LaTeX system  ***
-% *** with the testflow diagnostic prior to trusting their LaTeX platform ***
-% *** with production work. IEEE's font choices can trigger bugs that do  ***
-% *** not appear when using other class files.                            ***
-% The testflow support page is at:
-% http://www.michaelshell.org/tex/testflow/
-
-
-%%*************************************************************************
-%% Legal Notice:
-%% This code is offered as-is without any warranty either expressed or
-%% implied; without even the implied warranty of MERCHANTABILITY or
-%% FITNESS FOR A PARTICULAR PURPOSE! 
-%% User assumes all risk.
-%% In no event shall IEEE or any contributor to this code be liable for
-%% any damages or losses, including, but not limited to, incidental,
-%% consequential, or any other damages, resulting from the use or misuse
-%% of any information contained here.
-%%
-%% All comments are the opinions of their respective authors and are not
-%% necessarily endorsed by the IEEE.
-%%
-%% This work is distributed under the LaTeX Project Public License (LPPL)
-%% ( http://www.latex-project.org/ ) version 1.3, and may be freely used,
-%% distributed and modified. A copy of the LPPL, version 1.3, is included
-%% in the base LaTeX documentation of all distributions of LaTeX released
-%% 2003/12/01 or later.
-%% Retain all contribution notices and credits.
-%% ** Modified files should be clearly indicated as such, including  **
-%% ** renaming them and changing author support contact information. **
-%%
-%% File list of work: IEEEtran.cls, IEEEtran_HOWTO.pdf, bare_adv.tex,
-%%                    bare_conf.tex, bare_jrnl.tex, bare_jrnl_compsoc.tex,
-%%                    bare_jrnl_transmag.tex
-%%*************************************************************************
 
 % Note that the a4paper option is mainly intended so that authors in
 % countries using A4 can easily print to A4 and see how their papers will
@@ -69,10 +20,6 @@
 % If IEEEtran.cls has not been installed into the LaTeX system files,
 % manually specify the path to it like:
 % \documentclass[journal]{../sty/IEEEtran}
-
-
-
-
 
 % Some very useful LaTeX packages include:
 % (uncomment the ones you want to load)
@@ -96,11 +43,6 @@
 % When switching from latex to pdflatex and vice-versa, the compiler may
 % have to be run twice to clear warning/error messages.
 
-
-
-
-
-
 % *** CITATION PACKAGES ***
 %
 %\usepackage{cite}
@@ -119,11 +61,6 @@
 % The latest version can be obtained at:
 % http://www.ctan.org/tex-archive/macros/latex/contrib/cite/
 % The documentation is contained in the cite.sty file itself.
-
-
-
-
-
 
 % *** GRAPHICS RELATED PACKAGES ***
 %
@@ -165,10 +102,6 @@
 % You can find documentation about the pdfTeX application at:
 % http://www.tug.org/applications/pdftex
 
-
-
-
-
 % *** MATH PACKAGES ***
 %
 %\usepackage[cmex10]{amsmath}
@@ -187,10 +120,6 @@
 % does. amsmath.sty is already installed on most LaTeX systems. The latest
 % version and documentation can be obtained at:
 % http://www.ctan.org/tex-archive/macros/latex/required/amslatex/math/
-
-
-
-
 
 % *** SPECIALIZED LIST PACKAGES ***
 %
@@ -211,9 +140,6 @@
 % algorithmicx.sty package by Szasz Janos:
 % http://www.ctan.org/tex-archive/macros/latex/contrib/algorithmicx/
 
-
-
-
 % *** ALIGNMENT PACKAGES ***
 %
 %\usepackage{array}
@@ -227,13 +153,9 @@
 % latest version and documentation can be obtained at:
 % http://www.ctan.org/tex-archive/macros/latex/required/tools/
 
-
 % IEEEtran contains the IEEEeqnarray family of commands that can be used to
 % generate multiline equations as well as matrices, tables, etc., of high
 % quality.
-
-
-
 
 % *** SUBFIGURE PACKAGES ***
 %\ifCLASSOPTIONcompsoc
@@ -257,9 +179,6 @@
 %
 % The latest version and documentation of subfig.sty can be obtained at:
 % http://www.ctan.org/tex-archive/macros/latex/contrib/subfig/
-
-
-
 
 % *** FLOAT PACKAGES ***
 %
@@ -301,8 +220,6 @@
 % http://www.ctan.org/tex-archive/macros/latex/contrib/dblfloatfix/
 
 
-
-
 %\ifCLASSOPTIONcaptionsoff
 %  \usepackage[nomarkers]{endfloat}
 % \let\MYoriglatexcaption\caption
@@ -342,8 +259,6 @@
 % page by themselves.
 
 
-
-
 % *** PDF, URL AND HYPERLINK PACKAGES ***
 %
 %\usepackage{url}
@@ -352,8 +267,6 @@
 % systems. The latest version and documentation can be obtained at:
 % http://www.ctan.org/tex-archive/macros/latex/contrib/url/
 % Basically, \url{my_url_here}.
-
-
 
 
 % *** Do not adjust lengths that control margins, column widths, etc. ***
@@ -366,13 +279,26 @@
 % correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
 
-
+% Neutrinoless beta beta
+\def\znbb{0$\nu\beta\beta$}
+% 2 nu beta beta
+\def\tnbb{2$\nu\beta\beta$}
+% electron
+\def\elec{e$^{-}$}
+% electron anti-neutrino
+\def\elanu{$\bar{\nu}_{e}$}
+% electron neutrino
+\def\elnu{$\nu_{e}$}
+% neutrinoless half life
+\def\Tznbb{T$^{0\nu}_{1/2}$}
+%Ge 76
+\def\enrGe{Ge$^{76}$}
 \begin{document}
 %
 % paper title
 % can use linebreaks \\ within to get better formatting as desired
 % Do not put math or special symbols in the title.
-\title{Bare Demo of IEEEtran.cls for Journals}
+\title{The Majorana Parts Tracking Database}
 %
 %
 % author names and IEEE memberships
@@ -384,14 +310,8 @@
 % was not built to handle multiple paragraphs
 %
 
-\author{Michael~Shell,~\IEEEmembership{Member,~IEEE,}
-        John~Doe,~\IEEEmembership{Fellow,~OSA,}
-        and~Jane~Doe,~\IEEEmembership{Life~Fellow,~IEEE}% <-this % stops a space
-\thanks{M. Shell is with the Department
-of Electrical and Computer Engineering, Georgia Institute of Technology, Atlanta,
-GA, 30332 USA e-mail: (see http://www.michaelshell.org/contact.html).}% <-this % stops a space
-\thanks{J. Doe and J. Doe are with Anonymous University.}% <-this % stops a space
-\thanks{Manuscript received April 19, 2005; revised December 27, 2012.}}
+\author{Kyle~Snavely
+\thanks{Manuscript received ; .}}
 
 % note the % following the last \IEEEmembership and also \thanks - 
 % these prevent an unwanted space from occurring between the last author name
@@ -447,7 +367,15 @@ GA, 30332 USA e-mail: (see http://www.michaelshell.org/contact.html).}% <-this %
 % As a general rule, do not put math, special symbols or citations
 % in the abstract or keywords.
 \begin{abstract}
-The abstract goes here.
+The Majorana parts tracking database is a software effort with the goal of tracking
+cosmogenic activation in materials and parts used by the Majorana collaboration. The
+Majorana Demonstrator is an R\&D proof of concept leading towards a tonne-scale Germanium
+neutrinoless double beta decay experiment. Neutrinoless double beta decay is an exceedingly
+rare process requiring extreme radiopurity of components used in the experiment's
+construction. Tracking the location of parts as they are produced provides an estimate
+of their exposure to activating cosmic radiation. A web application for data entry
+and a Python exposure calculator have been developed to be used as a tool for
+achieving the extreme radiopurity required by such a rare decay search.
 \end{abstract}
 
 % Note that keywords are not normally used for peerreview papers.
@@ -473,40 +401,104 @@ IEEEtran, journal, \LaTeX, paper, template.
 
 
 \section{Introduction}
-% The very first letter is a 2 line initial drop letter followed
-% by the rest of the first word in caps.
-% 
-% form to use if the first word consists of a single letter:
-% \IEEEPARstart{A}{demo} file is ....
-% 
-% form to use if you need the single drop letter followed by
-% normal text (unknown if ever used by IEEE):
-% \IEEEPARstart{A}{}demo file is ....
-% 
-% Some journals put the first two words in caps:
-% \IEEEPARstart{T}{his demo} file is ....
-% 
-% Here we have the typical use of a "T" for an initial drop letter
-% and "HIS" in caps to complete the first word.
-\IEEEPARstart{T}{his} demo file is intended to serve as a ``starter file''
-for IEEE journal papers produced under \LaTeX\ using
-IEEEtran.cls version 1.8 and later.
-% You must have at least 2 lines in the paragraph with the drop letter
-% (should never be an issue)
-I wish you the best of success.
+\IEEEPARstart{T}{he} well know $\beta$ decay process, in which a neutron decays into
+a proton with the emission of an electron (\elec) and electron 
+anti-neutrino (\elanu), is energetically forbidden for some even-even
+nuclei. However, double beta decay modes such as two neutrino beta decay (\tnbb)
+ or neutrinoless double beta decay (\znbb) may be allowed.
+\tnbb\ is a well know process REF however observations of \znbb\ remain highly
+controversial at best REF. 
 
-\hfill mds
- 
-\hfill December 27, 2012
+In these double beta decay modes, two neutrons are converted to protons
+simultaneosly. \tnbb\ results in the emission of two \elec\ and \elanu, and
+in \znbb\ only the two electrons escape. \znbb\ therefore implies the pair
+annihilation of the \elanu\ and therefore that the \elanu\ is its own
+antiparticle, \elnu.
 
-\subsection{Subsection Heading Here}
-Subsection text here.
+Neutrinoless double beta decay, if it exists, is an exceedingly rare
+process. Because the \elanu's annihilate, only the electrons escape
+the decay. The resulting signal is a sharp peak at the endpoint of the
+conventional \tnbb\ spectrum. Detecting this signal will require extremely
+low background radiation, driving many \znbb\ deep underground. In addition,
+extremely radiopure materials must be used for construction of the detector
+components.
 
-% needed in second column of first page if using \IEEEpubid
-%\IEEEpubidadjcol
+The Majorana experiment is located at the 4850' level of the Sanford Underground
+Research Laboratory (SURF), and uses high-purity Germanium detectors enriched in
+\enrGe\ as both a source and detector for \znbb. Majorana is using a modular
+detector design and multiple experiment phases leading to a tonne-scale Germanium
+detector array. The prototype is nearly completion, the Demonstrator has begun
+production, and the tonne-scale effort is being researched together with the GERDA 
+collaboration, in Gran Sasso, Italy.
 
-\subsubsection{Subsubsection Heading Here}
-Subsubsection text here.
+\subsection{Majorana}
+\subsubsection{Neutrinoless double beta decay and dark matter}
+Neutrinoless double beta decay would imply that the neutrino is a Majorana fermion (it is its own
+antiparticle), and that lepton number is not a conserved quantity. 
+The half life (or decay rate) of this process, \Tznbb, is also
+related to the effective Majorana mass of the neutrino, and may
+provide insight into the mass hiearchy of the neutrino family.
+
+Neutrino paragraph
+
+Neutrino paragraph - and Majorana
+
+In addition the neutrinoless double beta decay, Majorana is competitive 
+in dark matter searchs. Results from WMAP
+
+\subsubsection{The prototype and demonstrator}
+
+\subsubsection{Radiopurity concerns}
+
+\subsection{Web Applications and CouchDB}
+Web apps are the future. They are easy to use. Couch is neat.
+
+\subsubsection{Web Apps}
+Text text
+
+\subsubsection{CouchDB}
+Text text
+
+\section{Parts Tracking}
+Into to parts tracking
+
+\subsection{Why Track Parts}
+Why
+
+\subsubsection{Exposure Calculation}
+A direct link to the physics goals of Majorana. Provide an estimate of cosmogenic activity in a part based on its material, storage, and travel history.
+
+\subsubsection{Inventory and Tracking}
+A significant task for any organization with a large number of physical assets. A single interface for tracking most items of interest is an invaluable tool. What processes has an item undergone? Where was it stored an how long?
+
+\subsubsection{Web Apps}
+A web interface provides an easy-to-use bridge for entering data into or presenting data from a database. A web interface is available anywhere with an internet connection. No coding is required on the end-user's behalf, no application must be compiled/supported on user machines, and code updates are a page-refresh away.
+
+\subsection{What are we tracking}
+Intro what. Serial number engraving, labeling.
+
+\subsubsection{Storage and Transportation}
+These are turned from addresses/times into geocodes (lat, long, elev, time)
+
+\subsubsection{Processes}
+A number of different processes an item can undergo; some have MJ \#s.
+
+\subsubsection{Relatives and Materials}
+Important for radiopurity. If there exists a hot part, we want to know from which stock it came from. Material differences are very important especially for electroformed v. commercial copper.
+
+\subsubsection{Assemblies and Components}
+As complex mechanical systems are built from MJ parts, we must track the location of individual members of the mechanical assembly. For instance, if a hot part is suspected, simulation data combined with assembly information can shorten repair/replacement downtime.
+
+\subsection{How are we tracking}
+intro, couch, web app, exp calc
+
+\subsubsection{couch}
+
+\subsubsection{web app structure}
+
+\subsubsection{python exp calc structure}
+
+\section{Conclusion}
 
 
 % An example of a floating figure using the graphicx package.
@@ -591,15 +583,6 @@ Subsubsection text here.
 % Note that, LaTeX2e, unlike IEEE journals, places footnotes above bottom
 % floats. This can be corrected via the \fnbelowfloat command of the
 % stfloats package.
-
-
-
-\section{Conclusion}
-The conclusion goes here.
-
-
-
-
 
 % if have a single appendix:
 %\appendix[Proof of the Zonklar Equations]
