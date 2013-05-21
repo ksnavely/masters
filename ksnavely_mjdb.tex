@@ -409,7 +409,38 @@ nuclei. However, double beta decay modes such as two neutrino beta decay (\tnbb)
 \tnbb\ is a well know process REF however observations of \znbb\ remain highly
 controversial at best REF. 
 
-In these double beta decay modes, two neutrons are converted to protons
+The Majorana experiment is located at the 4850' level of the Sanford Underground
+Research Laboratory (SURF), and uses high-purity Germanium (HPGe) detectors enriched in
+\enrGe\ as both a source and detector for \znbb. Majorana is using a modular
+detector design and multiple experiment phases leading to a tonne-scale Germanium
+detector array. The prototype is nearly completion, the Demonstrator has begun
+production, and the tonne-scale effort is being researched together with the GERDA 
+collaboration, in Gran Sasso, Italy.
+
+Majorana's choice of detection technology, high-radiopurity components, and deep-underground
+location make it a prime candidate for detection of dark matter candidates known as weakly
+interacting massive particles. It is known that dark matter comprises 26.8\% of all energy
+in the universe, and yet the composition of dark matter is as of yet undertermined. The
+Majorana Prototype and Demonstrator should probe to blah blah some limit REF.
+
+One part of Majorana's radiopurity campaign is a comprehensive parts tracking effort. Cosmic
+radiation may activate unstable isotopes in detector components which may later decay, and 
+tracking the activation rate of these cosmogenic isotopes allows for an estimate of background
+radiation due to activated detector components. Majorana has developed a CouchDB based database
+for tracking parts used in the construction of the experiment, with a web-application frontend
+for data entry and a Python based exposure calculator. Storage and transportation history are
+converted into geocodes and the time and elevation information can be used to place an limit
+on activated materials.
+
+\subsection{Majorana}
+\subsubsection{Neutrinoless double beta decay and dark matter}
+Neutrinoless double beta decay would imply that the neutrino is a Majorana fermion (it is its own
+antiparticle), and that lepton number is not a conserved quantity. 
+The half life (or decay rate) of this process, \Tznbb, is also
+related to the effective Majorana mass of the neutrino, and may
+provide insight into the mass hiearchy of the neutrino family.
+
+In double beta decay modes, two neutrons are converted to protons
 simultaneosly. \tnbb\ results in the emission of two \elec\ and \elanu, and
 in \znbb\ only the two electrons escape. \znbb\ therefore implies the pair
 annihilation of the \elanu\ and therefore that the \elanu\ is its own
@@ -423,35 +454,57 @@ low background radiation, driving many \znbb\ deep underground. In addition,
 extremely radiopure materials must be used for construction of the detector
 components.
 
-The Majorana experiment is located at the 4850' level of the Sanford Underground
-Research Laboratory (SURF), and uses high-purity Germanium detectors enriched in
-\enrGe\ as both a source and detector for \znbb. Majorana is using a modular
-detector design and multiple experiment phases leading to a tonne-scale Germanium
-detector array. The prototype is nearly completion, the Demonstrator has begun
-production, and the tonne-scale effort is being researched together with the GERDA 
-collaboration, in Gran Sasso, Italy.
 
-\subsection{Majorana}
-\subsubsection{Neutrinoless double beta decay and dark matter}
-Neutrinoless double beta decay would imply that the neutrino is a Majorana fermion (it is its own
-antiparticle), and that lepton number is not a conserved quantity. 
-The half life (or decay rate) of this process, \Tznbb, is also
-related to the effective Majorana mass of the neutrino, and may
-provide insight into the mass hiearchy of the neutrino family.
+In addition to neutrino science, Majorana offers the possibility of exploring dark
+matter candidates. It is known that luminous matter (matter coupling strongly to electromagnetism) 
+cannot account for the gravitational matter observed in the universe. Galactic rotation
+velocities, cosmic microwave background (CMB) anisotropy, and gravitational lensing by
+galactic clusters all support this idea. Recent results from the Plank mission
+demonstrate that the universe is composed of 4.9\% luminous matter, 26.8\% dark matter,
+and 68.3\% dark energy.
 
-Neutrino paragraph
+It has been found that dark matter plays a vital role in the evolution of the universe,
+and is key to the discrete structure of galaxies and other bodies of the cosmos we observe
+today.
+Because dark matter by definition does not significantly interact via electromagnetism,
+conventional observational astronomy cannot detect its presence. Its existence must be
+inferred from gravitational observation, and dark matter's composition is not yet known.
+Baryonic matter, that which is made up primarly of three-quark
+baryons by mass, is not believed to be a majority dark matter candidate due to estimates
+from Big Bang nucleosynthesis, searches for large lensing objects, and analysis of the
+CMB anisotropy.
+The leading candidates for the majority of dark matter in the universe are Weakly
+Interacting Massive Particles (WIMPs), which couple non-trivially only to gravitation
+and the weak force.
 
-Neutrino paragraph - and Majorana
+WIMPs belong to the category of dark matter known as Cold Dark Matter (CDM), refering
+to non-relativistic particles. There are no known particles which fufill the role of
+WIMP dark matter, however, WIMP-like particles do appear in extensions the the standard
+model such as supersymmetry. The Majorana collaboration's choice of high purity Germanium (HPGe)
+detectors allow a competitive measurement campaign for CDM WIMPs.
 
-In addition the neutrinoless double beta decay, Majorana is competitive 
-in dark matter searchs. Results from WMAP
 
 \subsubsection{The prototype and demonstrator}
 
 \subsubsection{Radiopurity concerns}
 
 \subsection{Web Applications and CouchDB}
-Web apps are the future. They are easy to use. Couch is neat.
+As both client computers and data-serving cloud power grows, the web browser has grown as a
+platform for application development in of itself. Users can execute software natively without
+the need for code management and compiling, and technologies proven on the web such as HTML
+and Javascript can provide a graphical user interface and interactivity without the need
+for complicated third party libraries. 
+
+Applications which run in the browser and communicate using the HTTP Representational State Transfer
+(REST) model can easily communicate with powerful database interfaces which also speak HTTP, such as
+CouchDB. CouchDB is a "No SQL" document based database, and powerful services such as Cloudant wrap
+distributed CouchDB instances together providing a Cloud model for data storage. Database management
+is minimized with a data layer such as Cloudant and developers can focus on creating client applications.
+
+Majorana has choosen the Cloudant data layer for data storage and developed a Javascript web application
+for parts tracking data entry. The Majorana Parts Tracking Database (PTDB) leverages the Backbone.js
+framework to supply a Model-View-Collection (MVC) decomposition and is currently used by over blah blah
+collaboration members, tracking blah blah parts and blah history entries.
 
 \subsubsection{Web Apps}
 Text text
