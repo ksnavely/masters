@@ -501,16 +501,30 @@ CouchDB. CouchDB is a "No SQL" document based database, and powerful services su
 distributed CouchDB instances together providing a Cloud model for data storage. Database management
 is minimized with a data layer such as Cloudant and developers can focus on creating client applications.
 
+\subsubsection{Web Apps}
 Majorana has choosen the Cloudant data layer for data storage and developed a Javascript web application
 for parts tracking data entry. The Majorana Parts Tracking Database (PTDB) leverages the Backbone.js
 framework to supply a Model-View-Collection (MVC) decomposition and is currently used by over blah blah
 collaboration members, tracking blah blah parts and blah history entries.
 
-\subsubsection{Web Apps}
-Text text
+The MVC design pattern (also known as Model-View-Controller and closely related to other patterns) breaks
+down the component objects in an application into three areas of concern. The Model objects contain 
+the data being manipulated as well as logic dealing with that data. The Views provide an interface for
+displaying the model data to the user, as well as logic dealing with the representation of data. 
+Collections (or Controllers) aggregate the models as well as contain inter-model logic.
 
-\subsubsection{CouchDB}
-Text text
+In this fashion, a model is not concerned with what type of view(s) it may have, and a view may 
+not directly manipulate the model it represents. Instead, message/event passing is used and allows
+the views to notify the collection when some operation must be done on model objects. This decouples
+the data and presentation layer of the application is a proven architectual pattern for web development.
+
+Backbone.js provides the base Model, View, and Collection objects and supplies them with a powerful API.
+In addition, the Backbone.Events API can be extended to any object and provides a message passing interface
+which can be in lieu of a custom event layer. Backbone.js was designed with CouchDB in mind and is
+a great starting point for CouchDB based application development.
+
+\subsubsection{CouchDB and Cloudant}
+CouchDB uses the JavaScript Object Notation (JSON) format
 
 \section{Parts Tracking}
 Into to parts tracking
