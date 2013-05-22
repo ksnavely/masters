@@ -520,11 +520,40 @@ the data and presentation layer of the application is a proven architectual patt
 
 Backbone.js provides the base Model, View, and Collection objects and supplies them with a powerful API.
 In addition, the Backbone.Events API can be extended to any object and provides a message passing interface
-which can be in lieu of a custom event layer. Backbone.js was designed with CouchDB in mind and is
+which can be used in lieu of a custom event layer. Backbone.js was designed with CouchDB in mind and is
 a great starting point for CouchDB based application development.
 
 \subsubsection{CouchDB and Cloudant}
-CouchDB uses the JavaScript Object Notation (JSON) format
+CouchDB stores database records as JavaScript Object Notation (JSON) documents. JSON provides a human-readable
+standard for data representation which is a subset of JavaScript syntax. Data is represented as an object
+literal which maps key strings to values, which may be strings, numbers, arrays, or other object literals. 
+JSON parses naturally into JavaScript objects and other languages, such as Python, have easy to use
+JSON parsing libraries. Working with a JSON object is very similar to interaction with hash-maps or 
+dictionaries in Python.
+
+Accessing the JSON documents in a Couch database is done via HTTP/REST. The REST model prescribes a client-server
+relationship in which state (database records for instance) is requested through an interface.
+HTTP is the interface of the web and interactions with CouchDB are handled with HTTP
+requests such as GET, PUT, POST, and DELETE. Document identity is specified with a Universal Resource Identifier (URI)
+and Universal Resource Locator (URL).
+
+Besides directly requesting a document at a given URI, CouchDB takes advantage of the MapReduce paradigm for data
+queries. MapReduce is an approach which optimizes a given query for parallel/cluster computing. First a map function
+is defined which is applied to all of the data in the database. It filters and sorts documents and returns key-value
+pairs. For instance, we may wish to return all database documents of some type, with a specific attribute used as
+a key to access the filtered documents. The map step performs logical comparisons on the database records and
+returns a key and value.
+
+The reduce step takes the output of the map function and summarizes the result. Rather than returning a dictionary
+of key-value pairs, it returns a single value from an operation performed on the result from the map step. The reduce
+step is optional and not all queries will require one. MapReduce is implemented in CouchDB with view documents. Each has
+a map and reduce JavaScript function, and only the map function is required. View results are updated incrementally as
+documents change or are added to the database and results are cached. In this way, view result rebuilds do not require
+long wait times as in other MapReduce implementations (such as REF).
+
+Couch/Cloudant has multi version concurrency control
+
+Cloudant data layer
 
 \section{Parts Tracking}
 Into to parts tracking
