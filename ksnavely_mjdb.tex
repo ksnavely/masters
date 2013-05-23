@@ -606,32 +606,63 @@ be accounted for in application development and CouchDB's document based data fl
 to easily add process types directly from the user interface. Some processes require official Majorana procedure to be
 followed and entry of the Majorana procedure number is required.
 
-\subsubsection{Web Apps}
-A web interface provides an easy-to-use bridge for entering data into or presenting data from a database. A web interface is available anywhere with an internet connection. No coding is required on the end-user's behalf, no application must be compiled/supported on user machines, and code updates are a page-refresh away.
+Majorana manufactures its own detector components deep underground in its clean machine shop, and tracking the natural
+flow of stock material to finished parts is an important part of the PTDB. This is especially important in the case of
+copper, as there must be no question as to whether a copper component is machined from commercial copper stock or
+Majorana's own ultra-pure underground electroformed copper. Thus, the stock and part relationship is also tracked using
+the PTDB web interface. 
 
-\subsection{What are we tracking}
-Intro what. Serial number engraving, labeling.
+When a stock-part relationship is established (known generally as parent-child), the child inherits the parent records
+material type. The bulk of the mass of Majorana's components is copper, though steel, teflon, and other plastics are 
+present in smaller amounts. Electromformed copper is basically indistinguishable from commercial copper and so material
+tracking is vital.
 
-\subsubsection{Storage and Transportation}
-These are turned from addresses/times into geocodes (lat, long, elev, time)
+The parent-child relationship is strictly one to many. No part can have more than one parent, as the parent-child link
+represents a reducing process, such as maching parts or cutting cables. A part which is made from more than one individual
+component is known as an assembly and the PTDB handles such relationships. A part can be only a member of one assembly,
+although an assembly may be a component of another assembly, known as that assembly's parent assembly.
 
-\subsubsection{Processes}
-A number of different processes an item can undergo; some have MJ \#s.
+The assembly types in Majorana are drawn directly from the project engineering's CAD designs and represent logical 
+groupings of parts, such as Detector Units, Detector Strings, or Cryostats. For instance, a hollow hex rod, which is much like
+a custom copper bolt, is a component of a Detector Unit assembly. When multiple identicle parts are present in an assembly,
+each part is assigned a role number which correlates directly to simulation geometry designed by Majorana. 
 
-\subsubsection{Relatives and Materials}
-Important for radiopurity. If there exists a hot part, we want to know from which stock it came from. Material differences are very important especially for electroformed v. commercial copper.
+By assigning each part and indivdual position number abberat backgrounds can be examined through a positional analysis in 
+simulation and the radioactive part identified without immediate deconstruction of an assembly which is very costly in 
+terms of manpower and time. During construction of detector components, detailed notes are kept in physical logbooks which
+are transcribed electronically, and finally the assembly information is entered into the PTDB.
 
-\subsubsection{Assemblies and Components}
-As complex mechanical systems are built from MJ parts, we must track the location of individual members of the mechanical assembly. For instance, if a hot part is suspected, simulation data combined with assembly information can shorten repair/replacement downtime.
+Given a serial number, one can examine a part in the PTDB and walk up the assembly tree. The hollow hex rod is a member
+of a Detector Unit, which is a member of a Detector String, which is in turn a component of a Cryostat assembly. Furthermore,
+if a history entry is applied to an assembly, it is also applied to each component or sub\-assembly in the assembly tree. If a Cryostat recieves
+a transportation history entry, each String, Detector Unit, and hollow hex rod in the tree will recieve the same entry.
+
 
 \subsection{How are we tracking}
 intro, couch, web app, exp calc
 
 \subsubsection{couch}
+couch review
+record types: parts (assemblies), history, administrative
 
 \subsubsection{web app structure}
+Backbone.js, MVC decomp
+  Web architecture and why/how MVC
+Bootstrap and JQuery UI
+Few singleton mediators -- RecordCollection and HistoryCollection. Event/message passing.
+FormCollections and Forms
+  API for rebuilding db record
+  Validation
+  DB-active lists (caching)
+  Lazy-loading (Better speed)
+Searching and views
 
 \subsubsection{python exp calc structure}
+intro
+Google APIs for geocoding
+Twisted server mode
+Crawl mode
+Exposure calc and calculation timeouts
 
 \section{Conclusion}
 
