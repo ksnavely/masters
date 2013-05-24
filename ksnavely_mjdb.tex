@@ -725,14 +725,70 @@ If many records are opened at once and they contain multiple DB-active dropdown 
 pull data from the cached list object rather than sending out AJAX requests and waiting for 
 a response.
 
-FormCollections and Forms
-  API for rebuilding db record
-  Validation
-  DB-active lists (caching)
-  Lazy-loading (Better speed)
-Searching and views
+Another type of form used is a list of records. 
+In the Couch JSON record, lists of relatives or linked histories are simply arrays of database ids. To provide a rich
+interface for the user, the RecordList encapsultes a Collection of record values (names, dates, etc...)
+as well as methods for adding/removing records from the list. Data for the collection is not loaded
+until interaction with the view to improve performance when multiple record models are opened.
+
+Data validation is handled by a singleton (Validator) and the Backbone.Model validate API. The validate
+method of model objects delegates to Validator by passing the values to be validated to the correct
+Validator method. A regular expression test is done and the result returned. The Validator singleton
+allows for all regular expressions for validation to be present in a single object, reducing scattered
+regex patterns in the application. Invalid data triggers view notifcation and can, for instance, turn backgrounds 
+red to notify the user that something has gone wrong. Invalid data can prevent record saving, or relative/history linking.
+
+As mentioned previously, queries to CouchDB are handled through views which are implementations of an
+incremental MapReduce on the data. The PTDB presents a few different search types to users including
+part serial number, name, comments, linked history records, material type, or machining operations.
+The machining operations search requires a Majorana drawing number which may be a partial match. Data
+returned from a Couch view is used to instantiate a SearchResults collection which implements various
+sorting features.
+
+Besides directly manipulating a single record, a user may also open multiple records at once for 
+manipulation. Controlled by the MultipleSelect model, users may batch-add history entries to a
+large number of parts and greatly reduce their workload. This interactivity is available from
+the view displaying search results.
+
+A user may also wish to copy data present in an existing part into one or more new parts. This
+feature is called cloning and is implemented through a general operation which accepts the number
+of clones to be made. Any data and history entries present in the original part are present in the
+clones produced, and history entries are re-linked to the new clones such that the clone serial
+numbers appear in the history entries' linked records data. If an assembly component is cloned, the
+resulting clones will not be a member of the assembly (as this requires component roles and positions
+to be specified) but they will have the data present from the original part.
+
+What features am I missing that should be detailed?
 
 \subsubsection{python exp calc structure}
+
+In addition to the PTDB web application for data entry, we have created a Python program for
+examining records in the database and calculating activation rates based on storage and 
+transportation times and locations. The exposure calculator can crawl the database or can
+also be run in server mode, using the Twisted library, and accepts http requests for
+exposure data. The locations record in the database contains address meta-data which
+is geocoded and time sampled using the Google Maps API. Elevation and time data can
+then be used to calculate expected activation rates for a given transportation route
+or storage event.
+
+Twisted is an event-driven network layer which can use many networking protocols. We've 
+choosen to use its HTTP functionality and and return exposure data as JSON strings. By
+using Twisted, our application gets multi-threaded concurrency for free. As developers,
+we simply write callback functions for the appropriate request URI.
+
+As it is not possible to send a GPS system with every shipment of experiment components
+in Majorana, we must make due with shipping information and origin/destination information.
+Given the origin and destination locations, we use the Google Maps API to generate time
+sampled geocodes (latitude, longtitude, and elevation). The elevation data is then used
+to calculation partial exposure to cosmic raditation. The total exposure for a given
+transportation or storage event is then simply the sum of the sampled exposures.
+
+Because more than one part may be linked to a history event, the calculated exposure is
+stored in the storage/transportation records, along with a calculation timestamp, or a flag
+if something has gone wrong during calculation. When not operating in server mode, the Python
+exposure calculator crawls the history records of the database and calculates exposure for
+new history entries or if a particular entry's timestamp is out of date.
+
 intro
 Google APIs for geocoding
 Twisted server mode
