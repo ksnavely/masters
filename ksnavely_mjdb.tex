@@ -646,6 +646,41 @@ couch review
 record types: parts (assemblies), history, administrative
 
 \subsubsection{web app structure}
+
+Many web applications adopt what is known as a model-view-controller (MVC) decomposition
+as a strategy for application structure. This approach seperates the data objects from
+their representation. In the web environment this is a natural strategy as view information
+may deal with HTML and CSS, which are entirely seperate of from the data's area of concern.
+The MVC decomposition is was a natural evolution in software stemming from design by
+seperation of responsibility and the development of graphical user interfaces.
+
+The parts tracking database uses a MVC framework known as Backbone.js. Backbone provides
+base Model, View, and Collection objects with APIs designed for use together. Some of the
+API is borrowed from another useful toolkit known as Underscore.js. The Backbone Model 
+object has a set of attributes (defined by the developer) which are interacted with through
+built in getters and setters which take an attribute key or key-value JSON object literal,
+respectively. When an attribute is changed, the model fires a change event, which is picked
+up by any View objects listening to that model.
+
+The Backbone View, in turn, will refresh UI on a model change. The view contains a render
+method which updates the HTML on the page. The view object also contain logic and functions
+for interactions with the DOM. Though a view has a reference to the model object it represents,
+the link may only be used for querying model state. Not allowing the view to directly manipulate
+the model is an important aspect of MVC decomposition. Instead, to change a model's state the
+view will notify a Collection object which contains a related set of Model objects.
+
+Backbone's Collection class is a flexible container for Model objects and makes great use
+of the Underscore.js library methods. In addition, the Backbone.Events API has been extended
+to singletone Collections in the PTDB, and this is how views may communicate via messages
+with the models they represent. In this fashion the Collection objects play the role of
+the controller in MVC decomposition. In terms of design patterns, the Collection singletons 
+act as mediators between the views and models, or models and other models.
+
+By implementing mediators between views and models, code complexity is reduced and the
+appliction is easier to maintain and extend. Very little work is requried on the 
+developer's behalf as Backbone.Events does the heavy lifting, and extending the Events
+API onto an object provides an easy way to create a mediator-type object.
+
 Backbone.js, MVC decomp
   Web architecture and why/how MVC
 Bootstrap and JQuery UI
