@@ -562,7 +562,7 @@ to scale to large numbers of concurrent readers and writers.
 
 Cloudant?
 
-\section{Parts Tracking}
+\section{Parts Tracking Overview}
 To uniquely identify parts and stock used by Majorana a serial number is laser engraved into metal and plastic parts.
 Some parts are too large to be easily engraved, or are otherwise unsuitable for laser engraving, and these
 components can be identified through metal stamping, affixing labels, or organizing a set of identical parts
@@ -638,15 +638,13 @@ if a history entry is applied to an assembly, it is also applied to each compone
 a transportation history entry, each String, Detector Unit, and hollow hex rod in the tree will recieve the same entry.
 
 
-\subsection{How are we tracking}
-intro, couch, web app, exp calc
-
-\subsubsection{couch}
+\subsection{couch}
 couch review
 record types: parts (assemblies), history, administrative
 
-\subsubsection{web app structure}
+\subsection{web app}
 
+\subsubsection{tools used}
 Many web applications adopt what is known as a model-view-controller (MVC) decomposition
 as a strategy for application structure. This approach seperates the data objects from
 their representation. In the web environment this is a natural strategy as view information
@@ -693,8 +691,40 @@ user interface with forms, buttons, and navigation components. Using a popular U
 library allows application development to focus on functionality rather than style (and
 cross-browser styling) issues.
 
-Bootstrap and JQuery UI
-Few singleton mediators -- RecordCollection and HistoryCollection. Event/message passing.
+\subsubsection{PTDB Structure Detail}
+The tracking logic (linking relatives, assembly components, and history entries) are controlled
+with two objects, RecordCollection and HistoryCollection. The Backbone.Events API has been
+extended onto these objects and they act as singleton mediators between part/assembly/history 
+models and are also notified with events from views.
+
+These two objects are the controllers of the PTDB, and the Backbone API has been extended
+for ease of use. Extra options can be passed to the get method of these collections which
+specify whether to automatically open a record from the database, or whether to open a view
+for presenting a model to the user. A factory method on the collection examines the JSON
+fetched from CouchDB and creates an instance of the correct type, adding the new model
+to the collection.
+
+The model types stored in these collections are PartRecords/AssemblyRecords or HistoryRecords
+respectively. The attributes of these models point to instances of another type of Collection,
+the FormCollection. As the goal of the PTDB is to present a rich interface for data entry, forms
+themselves have model and view representations. The simplest type of form is a textbox and label 
+pair. The Form model stores data about the object -- its current value, the label and tooltip text,
+and a boolean value representing whether or not the model is valid.
+
+More complex forms include dropdown boxes which contain options pulled from CouchDB. The model
+stores a reference to the correct type of options for the dropdown list. In addition, if the 
+desired option is not present the form can be switched into a textbox. The value entered by
+the user is sanitized and a key is generated based on the sanitized value. The new key-value
+pair is then written to the database and is present for future use.
+
+This database-active dropdown object is exploited for lists of locations (with address meta-data
+stored in the database record), processes, or collaboration members. No administrative intervention
+is required for the addition of information to these lists. To improve performance and reduce
+AJAX requests the options lists are cached in an object which specifies a few-second timeout.
+If many records are opened at once and they contain multiple DB-active dropdown lists, they 
+pull data from the cached list object rather than sending out AJAX requests and waiting for 
+a response.
+
 FormCollections and Forms
   API for rebuilding db record
   Validation
