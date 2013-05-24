@@ -676,13 +676,23 @@ with the models they represent. In this fashion the Collection objects play the 
 the controller in MVC decomposition. In terms of design patterns, the Collection singletons 
 act as mediators between the views and models, or models and other models.
 
-By implementing mediators between views and models, code complexity is reduced and the
+By using the mediator patter, models are decoupled from other models or views and the
 appliction is easier to maintain and extend. Very little work is requried on the 
 developer's behalf as Backbone.Events does the heavy lifting, and extending the Events
-API onto an object provides an easy way to create a mediator-type object.
+API onto an object provides an easy way to create a mediator-type object. 
 
-Backbone.js, MVC decomp
-  Web architecture and why/how MVC
+Besides Backbone.js (which uses Underscore.js), the PTDB also takes advantage of JQuery,
+a popular JavaScript library which simplifies interactions with the DOM and also provides
+AJAX abilities. Extensions to JQuery which deal specifically with CouchDB are also used.
+JQuery provides a lightweight but powerful API for document manipulation, in contrast to
+using pure JavaScript methods alone.
+
+For a refined user experience, Twitter's Bootstrap styling package is used. Bootstrap 
+provides HTML, CSS, and some JavaScript (not used in the PTDB) for building a clean
+user interface with forms, buttons, and navigation components. Using a popular UI 
+library allows application development to focus on functionality rather than style (and
+cross-browser styling) issues.
+
 Bootstrap and JQuery UI
 Few singleton mediators -- RecordCollection and HistoryCollection. Event/message passing.
 FormCollections and Forms
