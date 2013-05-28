@@ -787,13 +787,13 @@ Because more than one part may be linked to a history event, the calculated expo
 stored in the storage/transportation records, along with a calculation timestamp, or a flag
 if something has gone wrong during calculation. When not operating in server mode, the Python
 exposure calculator crawls the history records of the database and calculates exposure for
-new history entries or if a particular entry's timestamp is out of date.
+new history entries or if a particular entry's timestamp is out of date. 
 
-intro
-Google APIs for geocoding
-Twisted server mode
-Crawl mode
-Exposure calc and calculation timeouts
+Exposure data is also added to part records, but again the calculation is based on history
+entry data. If a new history entry is added (or the timestamp is out of date) the part
+exposure will be updated on the next crawl. The Google Maps API returns multiple possible
+routes between two locations and the correct route must be choosen or created
+manually for an accurate estimate of exposure to cosmic radiation.
 
 \section{Conclusion}
 
