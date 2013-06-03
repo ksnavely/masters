@@ -65,22 +65,23 @@
 % *** GRAPHICS RELATED PACKAGES ***
 %
 \ifCLASSINFOpdf
-  % \usepackage[pdftex]{graphicx}
+   \usepackage[pdftex]{graphicx}
   % declare the path(s) where your graphic files are
   % \graphicspath{{../pdf/}{../jpeg/}}
+    \graphicspath{{.}}
   % and their extensions so you won't have to specify these with
   % every instance of \includegraphics
-  % \DeclareGraphicsExtensions{.pdf,.jpeg,.png}
+    \DeclareGraphicsExtensions{.eps}
 \else
   % or other class option (dvipsone, dvipdf, if not using dvips). graphicx
   % will default to the driver specified in the system graphics.cfg if no
   % driver is specified.
-  % \usepackage[dvips]{graphicx}
+   \usepackage[dvips]{graphicx}
   % declare the path(s) where your graphic files are
-  % \graphicspath{{../eps/}}
+   \graphicspath{{.}}
   % and their extensions so you won't have to specify these with
   % every instance of \includegraphics
-  % \DeclareGraphicsExtensions{.eps}
+   \DeclareGraphicsExtensions{.eps}
 \fi
 % graphicx was written by David Carlisle and Sebastian Rahtz. It is
 % required if you want graphics, photos, etc. graphicx.sty is already
@@ -759,6 +760,13 @@ resulting clones will not be a member of the assembly (as this requires componen
 to be specified) but they will have the data present from the original part.
 
 What features am I missing that should be detailed?
+
+\begin{figure}[!p]
+\centering
+\includegraphics[width=7.5in]{Singletons}
+\caption{Simulation Results.}
+\label{singletons}
+\end{figure}
 
 \subsubsection{python exp calc structure}
 
