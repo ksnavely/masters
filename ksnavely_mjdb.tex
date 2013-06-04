@@ -402,27 +402,31 @@ IEEEtran, journal, \LaTeX, paper, template.
 
 
 \section{Introduction}
-\IEEEPARstart{T}{he} well know $\beta$ decay process, in which a neutron decays into
-a proton with the emission of an electron (\elec) and electron 
-anti-neutrino (\elanu), is energetically forbidden for some even-even
-nuclei. However, double beta decay modes such as two neutrino beta decay (\tnbb)
- or neutrinoless double beta decay (\znbb) may be allowed.
-\tnbb\ is a well know process REF however observations of \znbb\ remain highly
-controversial at best REF. 
+\IEEEPARstart{T}{he} Majorana experiment is an ultra-low background Physics
+experiment searching for the neutrinoless double beta decay (\znbb) process.
+Located at the 4850' level of the Sanford Underground Research Laboratory (SURF), 
+Majorana uses \enrGe\ as both a source and detector for \znbb. A modular
+detector design is employed and multiple experiment phases lead to a tonne-scale Germanium
+detector array. Majorana's extreme radiopurity makes it competitive for
+detection of dark matter candidates in addition to \znbb.
 
-The Majorana experiment is located at the 4850' level of the Sanford Underground
-Research Laboratory (SURF), and uses high-purity Germanium (HPGe) detectors enriched in
-\enrGe\ as both a source and detector for \znbb. Majorana is using a modular
-detector design and multiple experiment phases leading to a tonne-scale Germanium
-detector array. The prototype is nearly completion, the Demonstrator has begun
-production, and the tonne-scale effort is being researched together with the GERDA 
-collaboration, in Gran Sasso, Italy.
+Neutrinoless double beta decay would imply that the neutrino is a Majorana fermion (it is its own
+antiparticle), and that lepton number is not a conserved quantity. 
+The half life (or decay rate) of this process, \Tznbb, is also
+related to the effective Majorana mass of the neutrino, and may
+provide insight into the mass hiearchy of the neutrino family. REF
+In addition to neutrino science, Majorana offers the possibility of exploring dark
+matter candidates. 
 
-Majorana's choice of detection technology, high-radiopurity components, and deep-underground
-location make it a prime candidate for detection of dark matter candidates known as weakly
-interacting massive particles. It is known that dark matter comprises 26.8\% of all energy
-in the universe, and yet the composition of dark matter is as of yet undertermined. The
-Majorana Prototype and Demonstrator should probe to blah blah some limit REF.
+It is known that luminous matter (matter coupling strongly to electromagnetism) 
+cannot account for the gravitational matter observed in the universe. Galactic rotation
+velocities, cosmic microwave background (CMB) anisotropy, and gravitational lensing by
+galactic clusters all support this idea.
+The leading candidates for the majority of dark matter in the universe are Weakly
+Interacting Massive Particles (WIMPs), which couple non-trivially only to gravitation
+and the weak force. Detecting such weakly coupling particles or \znbb\ requires unprecedented
+radiopurity levels in experiment construction as well as assembly and operation in an ultra-clean
+environment.
 
 One part of Majorana's radiopurity campaign is a comprehensive parts tracking effort. Cosmic
 radiation may activate unstable isotopes in detector components which may later decay, and 
@@ -433,80 +437,30 @@ for data entry and a Python based exposure calculator. Storage and transportatio
 converted into geocodes and the time and elevation information can be used to place an limit
 on activated materials.
 
-\subsection{Majorana}
-\subsubsection{Neutrinoless double beta decay and dark matter}
-Neutrinoless double beta decay would imply that the neutrino is a Majorana fermion (it is its own
-antiparticle), and that lepton number is not a conserved quantity. 
-The half life (or decay rate) of this process, \Tznbb, is also
-related to the effective Majorana mass of the neutrino, and may
-provide insight into the mass hiearchy of the neutrino family.
+\section{Web Applications and CouchDB}
+A JavaScript based web application frontend has been developed by Majorana as an easy-to-use tool for data-entry.
+Adopting modern programming techniques, using CouchDB, and leveraging libraries like JQuery and Backbone.js allows the
+web application to be easily extendable and maintainable throught the project lifetime. Calculation of
+activation rates is done with a small Python application which walks through data entered into the web
+frontend and calculation results are pushed to the Couch database.
 
-In double beta decay modes, two neutrons are converted to protons
-simultaneosly. \tnbb\ results in the emission of two \elec\ and \elanu, and
-in \znbb\ only the two electrons escape. \znbb\ therefore implies the pair
-annihilation of the \elanu\ and therefore that the \elanu\ is its own
-antiparticle, \elnu.
-
-Neutrinoless double beta decay, if it exists, is an exceedingly rare
-process. Because the \elanu's annihilate, only the electrons escape
-the decay. The resulting signal is a sharp peak at the endpoint of the
-conventional \tnbb\ spectrum. Detecting this signal will require extremely
-low background radiation, driving many \znbb\ deep underground. In addition,
-extremely radiopure materials must be used for construction of the detector
-components.
-
-
-In addition to neutrino science, Majorana offers the possibility of exploring dark
-matter candidates. It is known that luminous matter (matter coupling strongly to electromagnetism) 
-cannot account for the gravitational matter observed in the universe. Galactic rotation
-velocities, cosmic microwave background (CMB) anisotropy, and gravitational lensing by
-galactic clusters all support this idea. Recent results from the Plank mission
-demonstrate that the universe is composed of 4.9\% luminous matter, 26.8\% dark matter,
-and 68.3\% dark energy.
-
-It has been found that dark matter plays a vital role in the evolution of the universe,
-and is key to the discrete structure of galaxies and other bodies of the cosmos we observe
-today.
-Because dark matter by definition does not significantly interact via electromagnetism,
-conventional observational astronomy cannot detect its presence. Its existence must be
-inferred from gravitational observation, and dark matter's composition is not yet known.
-Baryonic matter, that which is made up primarly of three-quark
-baryons by mass, is not believed to be a majority dark matter candidate due to estimates
-from Big Bang nucleosynthesis, searches for large lensing objects, and analysis of the
-CMB anisotropy.
-The leading candidates for the majority of dark matter in the universe are Weakly
-Interacting Massive Particles (WIMPs), which couple non-trivially only to gravitation
-and the weak force.
-
-WIMPs belong to the category of dark matter known as Cold Dark Matter (CDM), refering
-to non-relativistic particles. There are no known particles which fufill the role of
-WIMP dark matter, however, WIMP-like particles do appear in extensions the the standard
-model such as supersymmetry. The Majorana collaboration's choice of high purity Germanium (HPGe)
-detectors allow a competitive measurement campaign for CDM WIMPs.
-
-
-\subsubsection{The prototype and demonstrator}
-
-\subsubsection{Radiopurity concerns}
-
-\subsection{Web Applications and CouchDB}
 As both client computers and data-serving cloud power grows, the web browser has grown as a
-platform for application development in of itself. Users can execute software natively without
-the need for code management and compiling, and technologies proven on the web such as HTML
-and Javascript can provide a graphical user interface and interactivity without the need
+platform for application development. Users can execute software natively without
+the need for code management and compiling, and technologies proven on the web such as HyperText Markup Language (HTML)
+and JavaScript can provide a graphical user interface and interactivity without the need
 for complicated third party libraries. 
 
-Applications which run in the browser and communicate using the HTTP Representational State Transfer
+Applications which run in the browser and communicate using the HyperText Transfer Protocol (HTTP) Representational State Transfer
 (REST) model can easily communicate with powerful database interfaces which also speak HTTP, such as
-CouchDB. CouchDB is a "No SQL" document based database, and powerful services such as Cloudant wrap
+CouchDB. CouchDB is a "no Structured Query Language (SQL)" document based database, and powerful services such as Cloudant wrap
 distributed CouchDB instances together providing a Cloud model for data storage. Database management
 is minimized with a data layer such as Cloudant and developers can focus on creating client applications.
 
-\subsubsection{Web Apps}
+\subsection{Web Applications}
 Majorana has choosen the Cloudant data layer for data storage and developed a Javascript web application
 for parts tracking data entry. The Majorana Parts Tracking Database (PTDB) leverages the Backbone.js
-framework to supply a Model-View-Collection (MVC) decomposition and is currently used by over blah blah
-collaboration members, tracking blah blah parts and blah history entries.
+framework to supply a Model-View-Collection (MVC) decomposition and is currently used by over fifty
+collaboration members, tracking blah parts and blah history entries.
 
 The MVC design pattern (also known as Model-View-Controller and closely related to other patterns) breaks
 down the component objects in an application into three areas of concern. The Model objects contain 
@@ -524,7 +478,7 @@ In addition, the Backbone.Events API can be extended to any object and provides 
 which can be used in lieu of a custom event layer. Backbone.js was designed with CouchDB in mind and is
 a great starting point for CouchDB based application development.
 
-\subsubsection{CouchDB and Cloudant}
+\subsection{CouchDB}
 CouchDB stores database records as JavaScript Object Notation (JSON) documents. JSON provides a human-readable
 standard for data representation which is a subset of JavaScript syntax. Data is represented as an object
 literal which maps key strings to values, which may be strings, numbers, arrays, or other object literals. 
@@ -552,7 +506,7 @@ a map and reduce JavaScript function, and only the map function is required. Vie
 documents change or are added to the database and results are cached. In this way, view result rebuilds do not require
 long wait times as in other MapReduce implementations (such as REF).
 
-Updates to documents stored in CouchDB are handled through a multi-version concurrency control (MVCC). Using MVCC
+Updates to documents stored in CouchDB are handled through multi-version concurrency control (MVCC). Using MVCC
 circumvents the needs for file locks while writing to the database. Rather than locking a database record during
 a write operation, the current version is marked as expired and a new version of the file is is created. When a 
 record is requested, the latest version is sent to the user, although older versions may be requested as well.
@@ -560,8 +514,6 @@ They are differentiated by a revision number, and a revision number is required 
 to the database. If the revision number of the document to be written does not match the number in the database a 
 document confict occurs and it is left to the application to resolve the conflict. This allows database interactions
 to scale to large numbers of concurrent readers and writers.
-
-Cloudant?
 
 \section{Parts Tracking Overview}
 To uniquely identify parts and stock used by Majorana a serial number is laser engraved into metal and plastic parts.
@@ -692,7 +644,7 @@ user interface with forms, buttons, and navigation components. Using a popular U
 library allows application development to focus on functionality rather than style (and
 cross-browser styling) issues.
 
-\subsubsection{PTDB Structure Detail}
+\section{PTDB Structure Detail}
 The tracking logic (linking relatives, assembly components, and history entries) are controlled
 with two objects, RecordCollection and HistoryCollection. The Backbone.Events API has been
 extended onto these objects and they act as singleton mediators between part/assembly/history 
@@ -768,7 +720,7 @@ What features am I missing that should be detailed?
 \label{singletons}
 \end{figure}
 
-\subsubsection{python exp calc structure}
+\section{python exp calc structure}
 
 In addition to the PTDB web application for data entry, we have created a Python program for
 examining records in the database and calculating activation rates based on storage and 
