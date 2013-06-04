@@ -526,6 +526,8 @@ can be tracked over time an estimate can be provided for cosmogenic activation r
 to red-flag parts which may be hot, or allow for detailed investigation of part history if a source of background
 is found within the experiment.
 
+\subsection{Parts Tracking Logistics}
+
 To uniquely identify parts and stock used by Majorana a serial number is laser engraved into metal and plastic parts.
 Some parts are too large to be easily engraved, or are otherwise unsuitable for laser engraving, and these
 components can be identified through metal stamping, affixing labels, or organizing a set of identical parts
@@ -590,14 +592,7 @@ of a Detector Unit, which is a member of a Detector String, which is in turn a c
 if a history entry is applied to an assembly, it is also applied to each component or sub\-assembly in the assembly tree. If a Cryostat recieves
 a transportation history entry, each String, Detector Unit, and hollow hex rod in the tree will recieve the same entry.
 
-
-\subsection{couch}
-couch review
-record types: parts (assemblies), history, administrative
-
-\subsection{web app}
-
-\subsubsection{tools used}
+\subsection{Parts Tracking Web Interface}
 Many web applications adopt what is known as model-view-controller (MVC) decomposition
 as a strategy for application structure. This approach seperates the data objects from
 their representation. In the web environment this is a natural strategy as view information
@@ -648,21 +643,24 @@ cross-browser styling) issues.
 The tracking logic (linking relatives, assembly components, and history entries) is controlled
 by singletons which subclass the AbstractMediatorCollection class (see Fig.\ref{singletons}). This class is a Backbone Collection
 which extends the Backbone.Events API, and acts a mediator between DBRecord (parts and assemblies) or
-HistoryRecord instances. They are notified by events from models or views and carry out the needed
+HistoryRecord instances. The singletons are notified by events from models or views and carry out the needed
 linking operations.
 
-These two objects are the controllers of the PTDB, and the Backbone API has been extended
-for ease of use. Extra options can be passed to the get method of these collections which
-specify whether to automatically open a record from the database, or whether to open a view
-for presenting a model to the user. A factory method on the collection examines the JSON
+The AbstractMediatorCollection sublcasses (RecordCollection and HistoryCollection) also extend the
+Backbone Collection.get API for ease of use. An option can be passed to the get method which
+specifies whether to automatically open a record from the database.
+A factory method on the collection examines the JSON
 fetched from CouchDB and creates an instance of the correct type, adding the new model
-to the collection.
+to the collection. The application views listen for "add" events on the collection and creates views
+for the models as needed.
 
-The model types stored in these collections are PartRecords/AssemblyRecords or HistoryRecords
-respectively. The attributes of these models point to instances of another type of Collection,
+\subsection{Models}
+
+The model types stored in these collections are PartRecords/AssemblyRecords (DBRecord subclasses) or HistoryRecords.
+The attributes of these models point to instances of another type of Collection,
 the FormCollection. As the goal of the PTDB is to present a rich interface for data entry, forms
 themselves have model and view representations. The simplest type of form is a textbox and label 
-pair. The Form model stores data about the object -- its current value, the label and tooltip text,
+pair. The basic Form model class stores data about the object -- its current value, the label and tooltip text,
 and a boolean value representing whether or not the model is valid.
 
 More complex forms include dropdown boxes which contain options pulled from CouchDB. The model
@@ -685,8 +683,8 @@ interface for the user, the RecordList encapsultes a Collection of record values
 as well as methods for adding/removing records from the list. Data for the collection is not loaded
 until interaction with the view to improve performance when multiple record models are opened.
 
-Data validation is handled by a singleton (Validator) and the Backbone.Model validate API. The validate
-method of model objects delegates to Validator by passing the values to be validated to the correct
+Data validation is handled by a singleton class (Validator) and the Backbone.Model validate API. The validate
+method of model objects delegate to Validator by passing the values to be validated to the correct
 Validator method. A regular expression test is done and the result returned. The Validator singleton
 allows for all regular expressions for validation to be present in a single object, reducing scattered
 regex patterns in the application. Invalid data triggers view notifcation and can, for instance, turn backgrounds 
@@ -712,7 +710,26 @@ numbers appear in the history entries' linked records data. If an assembly compo
 resulting clones will not be a member of the assembly (as this requires component roles and positions
 to be specified) but they will have the data present from the original part.
 
-What features am I missing that should be detailed?
+\subsection{Views}
+
+The CollectionView class holds views for models stored in AbstractMediatorCollections. History record 
+views are held by a CollectionView, for instance. A tabbed interface is presented by TabbedPagesView,
+which holds a CollectionView for part and assembly record views. Non-database connected views, like those
+for help or contact tabs, are also contained in TabbedPagesView.
+
+As the Form models are designed around a certain user experience, there is a set of views with parent class
+FormView which mirrors the Form model inheritence tree. The is no such expectation for DBRecord models and
+in priniciple multiple views could represent a particular part or assembly, though currently the only representation is
+through the TabbedPagesView interface.
+
+Because History records are shared among parts, one view per open history model is used to represent each history
+record. The view for a particular history entry is shared among various part/assembly views. This assures the absence of
+stale views/information in the application.
+
+The views have access to the Backbone.Events API and listen for changes in model attributes. If a change is detected,
+the view is rerendered. User interaction with DOM elements triggers events which are caught by the view and the appropriate
+functions are run. To modify the models (other than direct data entry), views pass messages to AbstractMediatorCollections
+which cleaning prescribe linking interactions between models.
 
 \begin{figure}[!p]
 \centering
@@ -726,7 +743,7 @@ What features am I missing that should be detailed?
 In addition to the PTDB web application for data entry, we have created a Python program for
 examining records in the database and calculating activation rates based on storage and 
 transportation times and locations. The exposure calculator can crawl the database or can
-also be run in server mode, using the Twisted library, and accepts http requests for
+also be run in server mode, using the Twisted library, and accepts HTTP requests for
 exposure data. The locations record in the database contains address meta-data which
 is geocoded and time sampled using the Google Maps API. Elevation and time data can
 then be used to calculate expected activation rates for a given transportation route
@@ -741,7 +758,7 @@ As it is not possible to send a GPS system with every shipment of experiment com
 in Majorana, we must make due with shipping information and origin/destination information.
 Given the origin and destination locations, we use the Google Maps API to generate time
 sampled geocodes (latitude, longtitude, and elevation). The elevation data is then used
-to calculation partial exposure to cosmic raditation. The total exposure for a given
+to calculate exposure to cosmic raditation. The total exposure for a given
 transportation or storage event is then simply the sum of the sampled exposures.
 
 Because more than one part may be linked to a history event, the calculated exposure is
