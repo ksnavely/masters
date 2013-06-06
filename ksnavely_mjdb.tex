@@ -654,6 +654,13 @@ fetched from CouchDB and creates an instance of the correct type, adding the new
 to the collection. The application views listen for "add" events on the collection and creates views
 for the models as needed.
 
+\begin{figure}[!p]
+\centering
+\includegraphics[width=7.5in]{Singletons}
+\caption{Simulation Results.}
+\label{singletons}
+\end{figure}
+
 \subsection{Models}
 
 The model types stored in these collections are PartRecords/AssemblyRecords (DBRecord subclasses) or HistoryRecords.
@@ -662,6 +669,13 @@ the FormCollection. As the goal of the PTDB is to present a rich interface for d
 themselves have model and view representations. The simplest type of form is a textbox and label 
 pair. The basic Form model class stores data about the object -- its current value, the label and tooltip text,
 and a boolean value representing whether or not the model is valid.
+
+\begin{figure}[!p]
+\centering
+\includegraphics[width=7.5in]{Models}
+\caption{Simulation Results.}
+\label{models}
+\end{figure}
 
 More complex forms include dropdown boxes which contain options pulled from CouchDB. The model
 stores a reference to the correct type of options for the dropdown list. In addition, if the 
@@ -731,14 +745,7 @@ the view is rerendered. User interaction with DOM elements triggers events which
 functions are run. To modify the models (other than direct data entry), views pass messages to AbstractMediatorCollections
 which cleaning prescribe linking interactions between models.
 
-\begin{figure}[!p]
-\centering
-\includegraphics[width=7.5in]{Singletons}
-\caption{Simulation Results.}
-\label{singletons}
-\end{figure}
-
-\section{python exp calc structure}
+\section{Python Exposure Calculator}
 
 In addition to the PTDB web application for data entry, we have created a Python program for
 examining records in the database and calculating activation rates based on storage and 
@@ -775,6 +782,26 @@ manually for an accurate estimate of exposure to cosmic radiation.
 
 \section{Conclusion}
 
+Neutrinoless double beta decay, if it exists, is an exceedingly rare process.
+To make a competitive limit or measurement on \znbb\ requires Majorana to reach
+very low background levels. A parts tracking effort which allows material type,
+storage and location history, or other processes undergone to be recorded and
+accessed by users or computer programs is an effective tool for a comprehensive
+radiopurity campain. In addition, tracking detector components presents a significant
+logistical challenge and the parts tracking database aids in this regard.
+
+A web application front-end for data entry allows for non-expert users to input
+or query data on part type, material, location, or history. The Python exposure
+calculator is an example of one way this data can be used to generate an estimate
+of part activity. These tools have been developed with ease of maintainability and
+extendability in mind. Backbone.js provides structure and a Model-View-Collection
+decomposition to the web front-end. Techniques such as message passing through mediators
+decouple much of the inter-model and model-view logic and simplifies the code.
+
+CouchDB provides a flexible data storage solution and as it speaks HTTP is a natural
+fit for a web application. Libraries exist to work with CouchDB in many languages and
+features such as MapReduce and Multi-Version Concurrency Control make it a powerful
+alternative to the traditional SQL based database solution.
 
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
