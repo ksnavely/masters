@@ -654,13 +654,6 @@ fetched from CouchDB and creates an instance of the correct type, adding the new
 to the collection. The application views listen for "add" events on the collection and creates views
 for the models as needed.
 
-\begin{figure}[!p]
-\centering
-\includegraphics[width=7.5in]{Singletons}
-\caption{Simulation Results.}
-\label{singletons}
-\end{figure}
-
 \subsection{Models}
 
 The model types stored in these collections are PartRecords/AssemblyRecords (DBRecord subclasses) or HistoryRecords.
@@ -669,13 +662,6 @@ the FormCollection. As the goal of the PTDB is to present a rich interface for d
 themselves have model and view representations. The simplest type of form is a textbox and label 
 pair. The basic Form model class stores data about the object -- its current value, the label and tooltip text,
 and a boolean value representing whether or not the model is valid.
-
-\begin{figure}[!p]
-\centering
-\includegraphics[width=7.5in]{Models}
-\caption{Simulation Results.}
-\label{models}
-\end{figure}
 
 More complex forms include dropdown boxes which contain options pulled from CouchDB. The model
 stores a reference to the correct type of options for the dropdown list. In addition, if the 
@@ -783,8 +769,8 @@ manually for an accurate estimate of exposure to cosmic radiation.
 \section{Conclusion}
 
 Neutrinoless double beta decay, if it exists, is an exceedingly rare process.
-To make a competitive limit or measurement on \znbb\ requires Majorana to reach
-very low background levels. A parts tracking effort which allows material type,
+To make a competitive limit or measurement on \znbb or on dark matter interactions 
+requires Majorana to reach very low background levels. A parts tracking effort which allows material type,
 storage and location history, or other processes undergone to be recorded and
 accessed by users or computer programs is an effective tool for a comprehensive
 radiopurity campain. In addition, tracking detector components presents a significant
@@ -798,10 +784,35 @@ extendability in mind. Backbone.js provides structure and a Model-View-Collectio
 decomposition to the web front-end. Techniques such as message passing through mediators
 decouple much of the inter-model and model-view logic and simplifies the code.
 
-CouchDB provides a flexible data storage solution and as it speaks HTTP is a natural
+CouchDB provides a flexible data storage solution and speaks HTTP -- a natural
 fit for a web application. Libraries exist to work with CouchDB in many languages and
 features such as MapReduce and Multi-Version Concurrency Control make it a powerful
 alternative to the traditional SQL based database solution.
+
+Low-background physics experiments can benefit greatly from comprehensive
+parts and materials tracking efforts like Majorana's parts tracking database.
+Tracking data can provide estimates of cosmogenic radiation in detector components,
+a possible significant source of background. In addition, knowledge of material type
+(e.g. underground electroformed copper v. commercial) is crucial as two radio-dissimilar 
+parts may appear otherwise identical after machining. The parts tracking database is a 
+key component of Majorana's radiopurity campaign and will help the collaboration acheive
+its goals of probing the ultra-rare processes which shape the world around us.
+
+\begin{figure}[!p]
+\centering
+\includegraphics[width=7.5in]{Singletons}
+\caption{Simulation Results.}
+\label{singletons}
+\end{figure}
+
+\begin{figure}[!p]
+\centering
+\includegraphics[width=7.5in]{Models}
+\caption{Simulation Results.}
+\label{models}
+\end{figure}
+
+\clearpage
 
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
