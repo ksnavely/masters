@@ -454,7 +454,8 @@ components can be identified through metal stamping, affixing labels, or organiz
 with a common provenience in a bag and detailing the information on the bag.
 
 Addresses of relevant locations are stored in a document in \textsc{Majorana}'s PTDB and storage and transportation history
-entries reference these locations. \textsc{Majorana}'s exposure calculation software uses the Google Maps APIs to geocode these
+entries reference these locations. \textsc{Majorana}'s exposure calculation software uses the 
+Google Maps Application Programming Interfaces (APIs) to geocode these
 locations and provide sampled travel route information. The geocodes include elevation information and the elevation v. time
 profile is used to calculate an estimate for activation rates of cosmogenic isotopes in tracked components.
 
@@ -501,28 +502,47 @@ groupings of parts, such as Detector Units, Detector Strings, or Cryostats. For 
 each part is assigned a role number which correlates directly to simulation geometry designed by \textsc{Majorana}. 
 
 By assigning each part an indivdual position number, abberant backgrounds can be examined through a positional analysis in 
-simulation and the radioactive part identified without immediate deconstruction of an assembly which is very costly in 
-terms of manpower and time. During construction of detector components, detailed notes are kept in physical logbooks which
+simulation and the radioactive part identified without immediate deconstruction of an assembly, which is very costly in 
+terms of manpower and time. During construction of detector components detailed notes are kept in physical logbooks which
 are transcribed electronically, and finally the assembly information is entered into the PTDB.
 
 Given a serial number, one can examine a part in the PTDB and walk up the assembly tree. For example, the Hollow Hex Rod is a member
-of a Detector Unit, which is a member of a Detector String, which is in turn a component of a Cryostat assembly. Furthermore,
-if a history entry is applied to an assembly, it is also applied to each component or sub\-assembly in the assembly tree. If a Cryostat recieves
+of a Detector Unit, which is a member of a Detector String, which is in turn a component of a Cryostat assembly.
+If a history entry is applied to an assembly, it is also applied to each component or sub\-assembly in the assembly tree. If a Cryostat recieves
 a transportation history entry, each Detector String, Detector Unit, and Hollow Hex Rod currently in the tree will recieve the same entry.
 
-\subsection{Parts Tracking Web Interface}
+\subsection{The Parts Tracking Web Application}
+A JavaScript based web application frontend has been developed by \textsc{Majorana} as an easy-to-use tool for data-entry.
+Adopting modern programming techniques, using CouchDB, and leveraging libraries like JQuery and Backbone.js allows the
+web application to be easily extendable and maintainable throughout the project lifetime. Calculation of
+activation rates is done with a small Python application which walks through data entered into the web
+frontend and calculation results are pushed to the CouchDB database.
+
+As both client computers and data-serving cloud power grows, the web browser has grown as a
+platform for application development. Users can execute software natively without
+the need for code management and compiling, and technologies proven on the web such as HyperText Markup Language (HTML)
+and JavaScript can provide a graphical user interface and interactivity without the need
+for complicated third party libraries. 
+
+Applications which run in the browser and communicate using the HyperText Transfer Protocol (HTTP) Representational State Transfer
+(REST) model can easily communicate with powerful database interfaces which also speak HTTP, such as
+CouchDB. CouchDB doesn't used Structured Query Language (it is a "No SQL" database), but 
+rather is document based database, and services such as Cloudant wrap
+distributed CouchDB instances together providing a cloud model for data storage. Database management
+is minimized using Cloudant and developers can focus on creating client applications.
+
 Many web applications adopt what is known as model-view-controller (MVC) decomposition
 as a strategy for application structure. This approach seperates the data objects from
 their representation. In the web environment this is a natural strategy as view information
-may deal with HTML and CSS, which are entirely seperate of from the data's area of concern.
+may deal with HTML and Cascading Style Sheets (CSS), which are entirely seperate of from the data's area of concern.
 The MVC decomposition was a natural evolution in software stemming from design by
 seperation of responsibility and the development of graphical user interfaces.
 
 The parts tracking database uses a MVC framework known as Backbone.js. Backbone provides
-base Model, View, and Collection objects with APIs designed for use together. Some of the
-API is borrowed from another useful toolkit known as Underscore.js. The Backbone Model 
+base Model, View, and Collection (rather than Controller -- there are many MVC variants) objects with APIs designed for use together. Some of the
+API is borrowed from another toolkit known as Underscore.js. The Backbone Model 
 object has a set of attributes (defined by the developer) which are interacted with through
-built in getters and setters which take an attribute key or key-value JSON object literal,
+built in getters and setters which take an attribute key or key-value JavaScript Object Notation (JSON) object literal,
 respectively. When an attribute is changed, the model fires a change event, which is picked
 up by any View objects listening to that model.
 
@@ -557,50 +577,8 @@ user interface with forms, buttons, and navigation components. Using a popular U
 library allows application development to focus on functionality rather than style (and
 cross-browser styling) issues.
 
-\section{Web Applications and CouchDB}
-A JavaScript based web application frontend has been developed by \textsc{Majorana} as an easy-to-use tool for data-entry.
-Adopting modern programming techniques, using CouchDB, and leveraging libraries like JQuery and Backbone.js allows the
-web application to be easily extendable and maintainable throughout the project lifetime. Calculation of
-activation rates is done with a small Python application which walks through data entered into the web
-frontend and calculation results are pushed to the CouchDB database.
-
-As both client computers and data-serving cloud power grows, the web browser has grown as a
-platform for application development. Users can execute software natively without
-the need for code management and compiling, and technologies proven on the web such as HyperText Markup Language (HTML)
-and JavaScript can provide a graphical user interface and interactivity without the need
-for complicated third party libraries. 
-
-Applications which run in the browser and communicate using the HyperText Transfer Protocol (HTTP) Representational State Transfer
-(REST) model can easily communicate with powerful database interfaces which also speak HTTP, such as
-CouchDB. CouchDB doesn't used Structured Query Language (it is a "No SQL"), but 
-rather is document based database, and powerful services such as Cloudant wrap
-distributed CouchDB instances together providing a cloud model for data storage. Database management
-is minimized with a data layer such as Cloudant and developers can focus on creating client applications.
-
-\subsection{Web Applications}
-\textsc{Majorana} has choosen the Cloudant data layer for data storage and developed a Javascript web application
-for parts tracking data entry. The \textsc{Majorana} Parts Tracking Database (PTDB) leverages the Backbone.js
-framework to supply a Model-View-Collection (MVC) decomposition and is currently used by over fifty
-collaboration members, tracking blah parts and blah history entries.
-
-The MVC design pattern (also known as Model-View-Controller and closely related to other patterns) breaks
-down the component objects in an application into three areas of concern. The Model objects contain 
-the data being manipulated as well as logic dealing with that data. The Views provide an interface for
-displaying the model data to the user, as well as logic dealing with the representation of data. 
-Collections hold the model instances as well as contain inter-model logic.
-
-In this fashion, a model is not concerned with what type of view(s) it may have, and a view may 
-not directly manipulate the model it represents. Instead, message/event passing is used and allows
-the views to notify the collection when some operation must be done on model objects. This decouples
-the data and presentation layer of the application is a proven architectual pattern for web development.
-
-Backbone.js provides the base Model, View, and Collection objects and supplies them with a powerful Application Programming Interface (API).
-In addition, the Backbone.Events API can be extended to any object and provides a message passing interface
-which can be used in lieu of a custom event layer. Backbone.js was designed with CouchDB in mind and is
-a great starting point for CouchDB based application development.
-
 \subsection{CouchDB}
-CouchDB stores database records as JavaScript Object Notation (JSON) documents. JSON provides a human-readable
+CouchDB stores database records as JSON documents. JSON provides a human-readable
 standard for data representation which is a subset of JavaScript syntax. Data is represented as an object
 literal which maps key strings to values, which may be strings, numbers, arrays, or other object literals. 
 JSON parses naturally into JavaScript objects and other languages, such as Python, have easy-to-use
