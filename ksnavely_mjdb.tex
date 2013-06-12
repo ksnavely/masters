@@ -584,7 +584,7 @@ cross-browser styling) issues.
 
 \subsection{CouchDB}
 CouchDB stores database records as JSON documents. JSON provides a human-readable
-standard for data representation which is a subset of JavaScript syntax. Data is represented as an object
+standard for data representation which is a subset of JavaScript syntax. Data are represented as an object
 literal which maps key strings to values, which may be strings, numbers, arrays, or other object literals. 
 JSON parses naturally into JavaScript objects and other languages, such as Python, have easy-to-use
 JSON parsing libraries. Working with a JSON object is very similar to interaction with hash-maps or 
@@ -641,12 +641,23 @@ the Backbone.Router subclass MJDBRouter provides a mapping from URI navigation t
 
 
 \subsection{Models}
+The real-life items of interest in the parts tracking database are the parts and assemblies which comprise
+the experiment's hardware. These items are represented in the web application by the DBRecord model type, which is
+the parent of PartRecord and AssemblyRecord. The attributes of these models point to FormCollection (which holds
+Form model objects) or SubPage objects.
 
-The model types stored in these collections are PartRecords/AssemblyRecords (DBRecord subclasses) or HistoryRecords.
-The attributes of these models point to instances of another type of Collection,
-the FormCollection. As the goal of the PTDB is to present a rich interface for data entry, forms
-themselves have model and view representations. The simplest type of form is a textbox and label 
-pair. The basic Form model class stores data about the object -- its current value, the label and tooltip text,
+An event such as transportation, storage, machining, or other process a part may undergo is represented by a 
+HistoryRecord object. Similar to DBRecords, a HistoryRecord has a "collection" attribute which points to a
+FormCollection for the particular history event type. DBRecords and HistoryRecords have APIs for rebuilding
+broken relationships (e.g. a child points to a parent, but the parent has no reference to the child), or querying
+which assemblies a PartRecord or AssemblyRecord is a member of.
+
+As the goal of the PTDB is to present a rich interface for data entry, forms
+themselves have model and view representations. 
+Form models contain the data and logic for presenting a rich user interface, but do not contain HTML/CSS or
+methods which manipulate the DOM (these exist in the FormView class tree).
+The simplest type of form is a textbox and label pair. The basic Form model class stores data 
+about the object -- its current value, the label and tooltip text,
 and a boolean value representing whether or not the model is valid.
 
 More complex forms include dropdown boxes which contain options pulled from CouchDB. The model
@@ -663,25 +674,18 @@ If many records are opened at once and they contain multiple DB-active dropdown 
 pull data from the cached list object rather than sending out AJAX requests and waiting for 
 a response.
 
-Another type of form used is a list of records. 
-In the CouchDB JSON record, lists of relatives or linked histories are simply arrays of database ids. To provide a rich
-interface for the user, the RecordList encapsulates a Collection of record values (names, dates, etc...)
-as well as methods for adding/removing records from the list. Data for the collection is not loaded
+Another type of form used is a list of records, the RecordList and it's children RelativesList and HistoryRecordList. 
+In the CouchDB JSON record, lists of relatives or linked histories are simply arrays of database ids.
+RecordList encapsulates a collection of record values (names, dates, etc...)
+as well as methods for adding/removing records from the list. Data for the collection are not loaded
 until interaction with the view to improve performance when multiple record models are opened.
 
-Data validation is handled by a singleton class (Validator) and the Backbone.Model validate API. The validate
-method of model objects delegate to Validator by passing the values to be validated to the correct
-Validator method. A regular expression test is done and the result returned. The Validator singleton
-allows for all regular expressions for validation to be present in a single object, reducing scattered
-regex patterns in the application. Invalid data triggers view notifcation and can, for instance, turn backgrounds 
-red to notify the user that something has gone wrong. Invalid data can prevent record saving, or relative/history linking.
-
+Querying data from the UI creats a SearchPage instance, which holds the results of a CouchDB view request.
 As mentioned previously, queries to CouchDB are handled through views which are implementations of
 MapReduce functions which operate on the data. The PTDB presents a few different search types to users including
 part serial number, name, comments, linked history records, material type, or machining operations.
-The machining operations search requires a \textsc{Majorana} drawing number which may be a partial match. Data
-returned from a CouchDB view is used to instantiate a SearchResults collection which implements various
-sorting features.
+Data returned from a CouchDB view are used to instantiate a SearchResults collection which implements various
+sorting features. Partial key matching is supported for the drawing number search.
 
 Besides directly manipulating a single record, a user may also open multiple records at once for 
 manipulation. Controlled by the MultipleSelect model, users may batch-add history entries to a
@@ -692,9 +696,8 @@ A user may also wish to copy data present in an existing part into one or more n
 feature is called cloning and is implemented through a general operation which accepts the number
 of clones to be made. Any data and history entries present in the original part are present in the
 clones produced, and history entries are re-linked to the new clones such that the clone serial
-numbers appear in the history entries' linked records data. If an assembly component is cloned, the
-resulting clones will not be a member of the assembly (as this requires component roles and positions
-to be specified) but they will have the data present from the original part.
+numbers appear in the history entries' linked records data. Because cloning is meant to make
+data entry during parts production easier, assembly members may not be cloned. 
 
 \subsection{Collections}
 The tracking logic (linking relatives, assembly components, and history entries) is controlled
@@ -732,6 +735,15 @@ the view is rerendered. User interaction with DOM elements triggers events which
 functions are run. To modify the models (other than direct data entry), views pass messages to AbstractMediatorCollections
 which cleaning prescribe linking interactions between models.
 
+\subsection{Other Objects}
+Data validation is handled by a singleton class (Validator) and the Backbone.Model validate API. The validate
+method of model objects delegate to Validator by passing the values to be validated to the correct
+Validator method. A regular expression test is done and the result returned. The Validator singleton
+allows for all regular expressions for validation to be present in a single object, reducing scattered
+regex patterns in the application. Invalid data triggers view notifcation and can, for instance, turn backgrounds 
+red to notify the user that something has gone wrong. Invalid data can prevent record saving, or relative/history linking.
+
+
 \section{Exposure Calculator}
 
 In addition to the PTDB web application for data entry, we have created a Python program for
@@ -754,7 +766,7 @@ if something has gone wrong during calculation. When not operating in server mod
 exposure calculator crawls the history records of the database and calculates exposure for
 new history entries or if a particular entry's timestamp is out of date. 
 
-Exposure data is also added to part records, but again the calculation is based on history
+Exposure data are also added to part records, but again the calculation is based on history
 entry data. If a new history entry is added (or the timestamp is out of date) the part
 exposure will be updated on the next crawl. The Google Maps API returns multiple possible
 routes between two locations and the correct route must be choosen or created
