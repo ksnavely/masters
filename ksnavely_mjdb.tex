@@ -428,7 +428,7 @@ Determining the activation rate of cosmogenic isotopes allows for an estimate of
 radiation originating from detector components. \textsc{Majorana} has developed a CouchDB based database
 for tracking parts used in the construction of the experiment, with a web-application frontend
 for data entry and a Python based exposure calculator. Storage and transportation history are
-converted into geocodes and the time and elevation information can be used to place an limit
+converted into time and elevation profiles which can be used to place an limit
 on material activity.
 
 Tracking experiment components also plays an important role in quality assurance during 
@@ -455,8 +455,8 @@ with a common provenience in a bag and detailing the information on the bag.
 
 Addresses of relevant locations are stored in a document in \textsc{Majorana}'s PTDB and storage and transportation history
 entries reference these locations. \textsc{Majorana}'s exposure calculation software uses the 
-Google Maps Application Programming Interfaces (APIs) to geocode these
-locations and provide sampled travel route information. The geocodes include elevation information and the elevation v. time
+Google Maps Application Programming Interfaces (APIs) to convert these addresses into latitutdes, longtitudes, and elevations,
+as well as provide sampled travel route information. The elevation versus time
 profile is used to calculate an estimate for activation rates of cosmogenic isotopes in tracked components.
 
 In addition to physics information provided by tracking material exposure to cosmic radiation, parts tracking also provides
@@ -498,18 +498,18 @@ and an assembly may be a component of another assembly.
 
 The assembly types in \textsc{Majorana} are drawn directly from the project engineering CAD designs and represent logical 
 groupings of parts, such as Detector Units, Detector Strings, or Cryostats. For instance, a Hollow Hex Rod 
-(a custom copper bolt) is a component of a Detector Unit assembly. When multiple identicle parts are present in an assembly,
+(a custom copper bolt) is a component of a Detector Unit assembly. When multiple identical parts are present in an assembly,
 each part is assigned a role number which correlates directly to simulation geometry designed by \textsc{Majorana}. 
 
 By assigning each part an indivdual position number, abberant backgrounds can be examined through a positional analysis in 
 simulation and the radioactive part identified without immediate deconstruction of an assembly, which is very costly in 
-terms of manpower and time. During construction of detector components detailed notes are kept in physical logbooks which
-are transcribed electronically, and finally the assembly information is entered into the PTDB.
+terms of manpower and time. During construction of detector components detailed notes are kept in physical logbooks that
+transcribed into an electronic logbook, and finally the assembly information is entered into the PTDB.
 
 Given a serial number, one can examine a part in the PTDB and walk up the assembly tree. For example, the Hollow Hex Rod is a member
 of a Detector Unit, which is a member of a Detector String, which is in turn a component of a Cryostat assembly.
-If a history entry is applied to an assembly, it is also applied to each component or sub\-assembly in the assembly tree. If a Cryostat recieves
-a transportation history entry, each Detector String, Detector Unit, and Hollow Hex Rod currently in the tree will recieve the same entry.
+If a history entry is applied to an assembly, it is also applied to each component or sub\-assembly in the assembly tree. If a Cryostat receives
+a transportation history entry, each Detector String, Detector Unit, and Hollow Hex Rod currently in the tree will receive the same entry.
 
 \subsection{The Parts Tracking Web Application}
 A JavaScript based web application frontend has been developed by \textsc{Majorana} as an easy-to-use tool for data-entry.
@@ -527,9 +527,10 @@ for complicated third party libraries.
 Applications which run in the browser and communicate using the HyperText Transfer Protocol (HTTP) Representational State Transfer
 (REST) model can easily communicate with powerful database interfaces which also speak HTTP, such as
 CouchDB. CouchDB doesn't used Structured Query Language (it is a "No SQL" database), but 
-rather is document based database, and services such as Cloudant wrap
-distributed CouchDB instances together providing a cloud model for data storage. Database management
-is minimized using Cloudant and developers can focus on creating client applications.
+rather is document based database.
+Database management is minimized by using Cloudant as a data layer provider. Cloudant
+hosts clustered CouchDB instances and presents an API for interacting with the cluster
+as if it were a single CouchDB instance.
 
 Many web applications adopt what is known as model-view-controller (MVC) decomposition
 as a strategy for application structure. This approach seperates the data objects from
@@ -539,8 +540,9 @@ The MVC decomposition was a natural evolution in software stemming from design b
 seperation of responsibility and the development of graphical user interfaces.
 
 The parts tracking database uses a MVC framework known as Backbone.js. Backbone provides
-base Model, View, and Collection (rather than Controller -- there are many MVC variants) objects with APIs designed for use together. Some of the
-API is borrowed from another toolkit known as Underscore.js. The Backbone Model 
+base Model, View, and Collection (lacking an explicit Controller class, although some objects have
+Controller-like definitions in the PTDB code) objects with APIs designed for use together. 
+The Backbone Model 
 object has a set of attributes (defined by the developer) which are interacted with through
 built in getters and setters which take an attribute key or key-value JavaScript Object Notation (JSON) object literal,
 respectively. When an attribute is changed, the model fires a change event, which is picked
@@ -553,8 +555,8 @@ the link may only be used for querying model state. Not allowing the view to dir
 the model is an important aspect of MVC decomposition. Instead, to change a model's state the
 view will notify a Collection object which contains a related set of Model objects.
 
-Backbone's Collection class is a flexible container for Model objects and makes great use
-of the Underscore.js library methods. In addition, the Backbone.Events API has been extended
+Backbone's Collection class is a flexible container for Model objects.
+In addition, the Backbone.Events API has been extended
 to singleton Collections in the PTDB, and this is how views may communicate via messages
 with the models they represent. In this fashion the Collection objects play the role of
 the controller in MVC decomposition. In terms of design patterns, the Collection singletons 
@@ -565,11 +567,14 @@ application is easier to maintain and extend. Very little work is requried on th
 developer's behalf as extending the Backbone.Events API onto an object provides an
 easy way to create a mediator.
 
-Besides Backbone.js (which uses Underscore.js), the PTDB also takes advantage of JQuery,
-a popular JavaScript library which simplifies interactions with the DOM and also provides
+Besides Backbone.js, the PTDB also takes advantage of JQuery and Underscore.js.
+JQuery is a popular JavaScript library which simplifies interactions with the DOM and also provides
 an Asynchronous JavaScript And eXtended Markup Language (AJAX) API. Extensions to JQuery which deal specifically with CouchDB are also used.
 JQuery provides a lightweight but powerful API for document manipulation, in contrast to
-using pure JavaScript methods alone.
+using pure JavaScript methods alone. Underscore.js is another lightweight toolkit which provides
+convienient methods for (among other things) loop constructs and common functional programming tasks.
+Backbone.js requires Underscore.js and many of the Underscore.js methods have been extended onto the 
+Backbone.js MVC objects.
 
 For a refined user experience, Twitter's Bootstrap styling package is used. Bootstrap 
 provides HTML, CSS, and some JavaScript (not used in the PTDB) for building a clean
@@ -588,8 +593,7 @@ dictionaries in Python.
 Accessing the JSON documents in a CouchDB database is done via HTTP/REST. The REST model prescribes a client-server
 relationship in which state (database records for instance) is requested through an interface.
 HTTP is the interface of the web and interactions with CouchDB are handled with HTTP
-requests such as GET, PUT, POST, and DELETE. Document identity is specified with a Universal Resource Identifier (URI)
-and Universal Resource Locator (URL).
+requests such as GET, PUT, POST, and DELETE. Document identity is specified with a Universal Resource Identifier (URI).
 
 Besides directly requesting a document at a given URI, CouchDB takes advantage of the MapReduce paradigm for data
 queries. MapReduce is an approach which optimizes a given query for parallel/cluster computing. First a map function
@@ -607,29 +611,34 @@ long wait times as in other MapReduce implementations (such as REF).
 
 Updates to documents stored in CouchDB are handled through multi-version concurrency control (MVCC). Using MVCC
 circumvents the needs for file locks while writing to the database. Rather than locking a database record during
-a write operation, the current version is marked as expired and a new version of the file is is created. When a 
+a write operation, a new version of the file is is created and served by default. When a 
 record is requested, the latest version is sent to the user, although older versions may be requested as well.
 They are differentiated by a revision number, and a revision number is required when writing a document back 
 to the database. If the revision number of the document to be written doesn't match the revision of the current
 copy in the database,
-a document update confict occurs and it is left to the application to resolve the conflict. If the numbers match,
+a document update confict occurs and it is left to the application to resolve the conflict (in the PTDB the user must
+re-open the record in question and get the new version in the event of a conlict). If the numbers match,
 a new revision number is generated and the document saved with that number.
 This allows database interactions to scale to large numbers of concurrent readers and writers.
 
-\section{PTDB Structure Detail}
-The tracking logic (linking relatives, assembly components, and history entries) is controlled
-by singletons which subclass the AbstractMediatorCollection class (see Fig.\ref{singletons}). This class is a Backbone Collection
-which extends the Backbone.Events API, and acts a mediator between DBRecord (parts and assemblies) or
-HistoryRecord instances. The singletons are notified by events from models or views and carry out the needed
-linking operations.
+\section{Web Application Structure}
+The building blocks of the PTDB web application are the Backbone.Model subclasses. DBRecord objects represent parts
+and assemblies and their attributes point to Form model instances. HistoryRecords provide an interface for manipulating 
+the storage, machining, transportation, or process records which may be linked to parts or assemblies. The Form model
+acts as the parent to a tree of subclasses which are the data-containers for the user interface presented by the PTDB.
 
-The AbstractMediatorCollection subclasses (RecordCollection and HistoryCollection) also extend the
-Backbone Collection.get API for ease of use. An option can be passed to the get method which
-specifies whether to automatically open a record from the database.
-A factory method on the collection examines the JSON
-fetched from CouchDB and creates an instance of the correct type, adding the new model
-to the collection. The application views listen for "add" events on the collection and creates views
-for the models as needed.
+Backbone.Collection objects contain multiple models and some, the AbstractMediatorCollection objects, support event notification
+which controls inter-model linking. FormCollection objects aggregate Form models and provide an API for generating JSON to be
+saved to the database from the models it contains.
+
+View objects which inherit from Backbone.View update the DOM to present information to the user. They contain logic dealing with
+representation of data from DBRecords, HistoryRecords, and Form models. Events triggered by user interaction with the DOM cause 
+view functions to be executed, updating data stored in a model, passing messages to mediators, or simply manipulating the view.
+
+Other objects act like controllers in a Model-View-Controller decomposition, such as DBController, DBListController, Validator,
+and MJDBRouter. These are used to abstract interactions with CouchDB and add functionality such as data caching and validation. 
+the Backbone.Router subclass MJDBRouter provides a mapping from URI navigation to function execution.
+
 
 \subsection{Models}
 
@@ -656,7 +665,7 @@ a response.
 
 Another type of form used is a list of records. 
 In the CouchDB JSON record, lists of relatives or linked histories are simply arrays of database ids. To provide a rich
-interface for the user, the RecordList encapsultes a Collection of record values (names, dates, etc...)
+interface for the user, the RecordList encapsulates a Collection of record values (names, dates, etc...)
 as well as methods for adding/removing records from the list. Data for the collection is not loaded
 until interaction with the view to improve performance when multiple record models are opened.
 
@@ -667,8 +676,8 @@ allows for all regular expressions for validation to be present in a single obje
 regex patterns in the application. Invalid data triggers view notifcation and can, for instance, turn backgrounds 
 red to notify the user that something has gone wrong. Invalid data can prevent record saving, or relative/history linking.
 
-As mentioned previously, queries to CouchDB are handled through views which are implementations of an
-incremental MapReduce on the data. The PTDB presents a few different search types to users including
+As mentioned previously, queries to CouchDB are handled through views which are implementations of
+MapReduce functions which operate on the data. The PTDB presents a few different search types to users including
 part serial number, name, comments, linked history records, material type, or machining operations.
 The machining operations search requires a \textsc{Majorana} drawing number which may be a partial match. Data
 returned from a CouchDB view is used to instantiate a SearchResults collection which implements various
@@ -686,6 +695,21 @@ clones produced, and history entries are re-linked to the new clones such that t
 numbers appear in the history entries' linked records data. If an assembly component is cloned, the
 resulting clones will not be a member of the assembly (as this requires component roles and positions
 to be specified) but they will have the data present from the original part.
+
+\subsection{Collections}
+The tracking logic (linking relatives, assembly components, and history entries) is controlled
+by singletons which subclass the AbstractMediatorCollection class (see Fig.\ref{singletons}). This class is a Backbone Collection
+which extends the Backbone.Events API, and acts a mediator between DBRecord (parts and assemblies) or
+HistoryRecord instances. The singletons are notified by events from models or views and carry out the needed
+linking operations.
+
+The AbstractMediatorCollection subclasses (RecordCollection and HistoryCollection) also extend the
+Backbone Collection.get API for ease of use. An option can be passed to the get method which
+specifies whether to automatically open a record from the database.
+A factory method on the collection examines the JSON
+fetched from CouchDB and creates an instance of the correct type, adding the new model
+to the collection. The application views listen for "add" events on the collection and creates views
+for the models as needed.
 
 \subsection{Views}
 
@@ -714,8 +738,8 @@ In addition to the PTDB web application for data entry, we have created a Python
 examining records in the database and calculating activation rates based on storage and 
 transportation times and locations. The exposure calculator can crawl the database or can
 also be run in server mode, using the Twisted library, and accepts HTTP requests for
-exposure data. The locations record in the database contains address meta-data which
-is geocoded and time sampled using the Google Maps API. Elevation and time data can
+exposure data. The locations record in the database contains addresses which
+are converted to latitude, longtitude, and elevation data using the Google Maps API. Elevation and time data can
 then be used to calculate expected activation rates for a given transportation route
 or storage event.
 
@@ -723,13 +747,6 @@ Twisted is an event-driven network layer which can use many networking protocols
 choosen to use its HTTP functionality and and return exposure data as JSON strings. By
 using Twisted, our application gets multi-threaded concurrency for free. As developers,
 we simply write callback functions for the appropriate request URI.
-
-As it is not possible to send a GPS system with every shipment of experiment components
-in \textsc{Majorana}, we must make due with shipping information and origin/destination information.
-Given the origin and destination locations, we use the Google Maps API to generate time
-sampled geocodes (latitude, longtitude, and elevation). The elevation data is then used
-to calculate exposure to cosmic raditation. The total exposure for a given
-transportation or storage event is then simply the sum of the sampled exposures.
 
 Because more than one part may be linked to a history event, the calculated exposure is
 stored in the storage/transportation records, along with a calculation timestamp, or a flag
@@ -759,7 +776,8 @@ calculator is an example of one way this data can be used to generate an estimat
 of part activity. These tools have been developed with ease of maintainability and
 extendability in mind. Backbone.js provides structure and a Model-View-Collection
 decomposition to the web front-end. Techniques such as message passing through mediators
-decouple much of the inter-model and model-view logic and simplifies the code.
+decouple much of the inter-model (linking relatives, assembly components, and history entries)
+and model-view logic and simplifies the code.
 
 CouchDB provides a flexible data storage solution and speaks HTTP -- a natural
 fit for a web application. Libraries exist to work with CouchDB in many languages and
