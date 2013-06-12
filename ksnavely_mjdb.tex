@@ -644,7 +644,7 @@ the Backbone.Router subclass MJDBRouter provides a mapping from URI navigation t
 The real-life items of interest in the parts tracking database are the parts and assemblies which comprise
 the experiment's hardware. These items are represented in the web application by the DBRecord model type, which is
 the parent of PartRecord and AssemblyRecord. The attributes of these models point to FormCollection (which holds
-Form model objects) or SubPage objects.
+Form model objects) instances.
 
 An event such as transportation, storage, machining, or other process a part may undergo is represented by a 
 HistoryRecord object. Similar to DBRecords, a HistoryRecord has a "collection" attribute which points to a
@@ -713,6 +713,14 @@ A factory method on the collection examines the JSON
 fetched from CouchDB and creates an instance of the correct type, adding the new model
 to the collection. The application views listen for "add" events on the collection and creates views
 for the models as needed.
+
+As mentioned before, DBRecord and HistoryRecord objects have attributes which point to FormCollection instances.
+FormCollections contain a set of Form models as well as some basic logic. Instances can return an array of form ids
+and specify an API for returning JSON from Form models contained in the collection. Subclasses 
+group sets of related forms together and implement extra logic related to the set of forms. For instance, AssemblyForms
+has a method for returning the serial numbers of components in the assembly, as it contains a Form model which holds
+that information. PartForms has a method for getting or setting the material type -- grabbing the value from the
+desired Form model.
 
 \subsection{Views}
 
