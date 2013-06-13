@@ -701,18 +701,17 @@ data entry during parts production easier, assembly members may not be cloned.
 
 \subsection{Collections}
 The tracking logic (linking relatives, assembly components, and history entries) is controlled
-by singletons which subclass the AbstractMediatorCollection class (see Fig.\ref{singletons}). This class is a Backbone Collection
+by singletons which subclass the AbstractMediatorCollection class (see Fig.\ref{singletons}). This class is a Backbone.Collection
 which extends the Backbone.Events API, and acts a mediator between DBRecord (parts and assemblies) or
 HistoryRecord instances. The singletons are notified by events from models or views and carry out the needed
 linking operations.
 
-The AbstractMediatorCollection subclasses (RecordCollection and HistoryCollection) also extend the
-Backbone Collection.get API for ease of use. An option can be passed to the get method which
+The AbstractMediatorCollection class also extends the
+Backbone.Collection.get API for ease of use. An option can be passed to the get method which
 specifies whether to automatically open a record from the database.
 A factory method on the collection examines the JSON
 fetched from CouchDB and creates an instance of the correct type, adding the new model
-to the collection. The application views listen for "add" events on the collection and creates views
-for the models as needed.
+to the collection. 
 
 As mentioned before, DBRecord and HistoryRecord objects have attributes which point to FormCollection instances.
 FormCollections contain a set of Form models as well as some basic logic. Instances can return an array of form ids
@@ -723,11 +722,16 @@ that information. PartForms has a method for getting or setting the material typ
 desired Form model.
 
 \subsection{Views}
+The views have access to the Backbone.Events API and listen for changes in model attributes. If a change is detected,
+the view is rerendered. User interaction with DOM elements triggers events which are caught by the view and the appropriate
+functions are run. To modify DBRecord or HistoryRecord models (other than direct data entry) views pass messages to 
+RecordCollection or HistoryCollection which cleaning prescribe linking interactions between models.
 
-The CollectionView class holds views for models stored in AbstractMediatorCollections. History record 
-views are held by a CollectionView, for instance. A tabbed interface is presented by TabbedPagesView,
+The CollectionView class holds views for models stored in AbstractMediatorCollections. HistoryFormViews
+are held by a CollectionView, for instance. A tabbed interface is presented by TabbedPagesView,
 which holds a CollectionView for part and assembly record views. Non-database connected views, like those
-for help or contact tabs, are also contained in TabbedPagesView.
+for help or contact tabs, are also contained in TabbedPagesView. The history CollectionView and TabbedPagesView
+listen for "add" events on their respective collections and add views for the added models as need.
 
 As the Form models are designed around a certain user experience, there is a set of views with parent class
 FormView which mirrors the Form model inheritence tree. The is no such expectation for DBRecord models and
@@ -738,19 +742,29 @@ Because History records are shared among parts, one view per open history model 
 record. The view for a particular history entry is shared among various part/assembly views. This assures the absence of
 stale views/information in the application.
 
-The views have access to the Backbone.Events API and listen for changes in model attributes. If a change is detected,
-the view is rerendered. User interaction with DOM elements triggers events which are caught by the view and the appropriate
-functions are run. To modify the models (other than direct data entry), views pass messages to AbstractMediatorCollections
-which cleaning prescribe linking interactions between models.
-
 \subsection{Other Objects}
 Data validation is handled by a singleton class (Validator) and the Backbone.Model validate API. The validate
-method of model objects delegate to Validator by passing the values to be validated to the correct
-Validator method. A regular expression test is done and the result returned. The Validator singleton
-allows for all regular expressions for validation to be present in a single object, reducing scattered
-regex patterns in the application. Invalid data triggers view notifcation and can, for instance, turn backgrounds 
+method of model objects delegate to the appropriate Validator method.
+A regular expression test is done and the result returned. The Validator singleton
+allows for all regular expressions needed for validation to be present in a single object, reducing scattered
+regular expression patterns in the application. Invalid data triggers view notifcation and can, for instance, turn backgrounds 
 red to notify the user that something has gone wrong. Invalid data can prevent record saving, or relative/history linking.
 
+Database and AJAX interactions are abstracted with the DBController singleton. It allows for error-handling during saving or 
+opening documents, and requesting view results, to be primarily in a single object. It also has methods for generating new part, assembly, or history
+entry serial numbers, as well as for cloning and adding to DB-active lists.
+
+DBListController is a singleton which caches options lists stored in CouchDB, such as people, locations, or process types. Its
+API allows for retrieving list options, forcing a cache reset, and checking to see if the cache is valid. The cache timeout is 
+one minute by default. Caching the list options improves interaction speeds when many parts must be opened for manipulation. For
+instance, adding a history entry to a String assembly may involve changes in over one hundred parts and each part contains many
+DB-active lists to be fetched, and may contain history entries with more.
+
+The MJDBRouter object extends Backbone.Router to provide address-bar controlled features. This allows basic application state
+to be shared via a simple link, which might for instance open a certain record in the tabbed interface. Other use cases include
+updating the address-bar when searching the database so the view type and keys are visible to the user. In this way the MJDBRouter
+acts on a message (the route navigated to, causing function execution with optional arguments) while displaying the message (route)
+to the user in the navigation bar.
 
 \section{Exposure Calculator}
 
