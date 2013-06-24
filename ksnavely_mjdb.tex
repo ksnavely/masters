@@ -45,7 +45,7 @@
 
 % *** CITATION PACKAGES ***
 %
-%\usepackage{cite}
+\usepackage{cite}
 % cite.sty was written by Donald Arseneau
 % V1.6 and later of IEEEtran pre-defines the format of the cite.sty package
 % \cite{} output to follow that of IEEE. Loading the cite package will
@@ -406,11 +406,11 @@ IEEEtran, journal, \LaTeX, paper, template.
 \section{Introduction}
 \IEEEPARstart{D}{etecting} neutrinoless double beta decay (\znbb) would reveal whether the neutrinos are their own antiparticles,
 whether lepton number is a conserved quantity, and may provide insight into
-the mass hiearchy of the neutrino family (REF [http://iopscience.iop.org.libproxy.lib.unc.edu/1742-6596/375/4/042010/]).
+the mass hiearchy of the neutrino family \cite{mj_wilkerson}.
 \textsc{Majorana}'s extreme radiopurity requirements also make it competitive in the search for dark
 matter candidate particles known as Weakly Interacting Massive Particles (WIMPs).
 WIMPs are the leading candidates for the majority composition of dark matter,
-which comprises REF [http://www.sciencedirect.com.libproxy.lib.unc.edu/science/article/pii/S0370157304003515] 26\% of the mass-energy density in the universe.
+which comprises \cite{darkmatter_bertone} 26\% of the mass-energy density in the universe.
 Achieving these goals requires a multifaceted strategy to reduce background radiation.
 Careful choice and handling of materials must be used,
 especially near detectors, and components must be assembled in a clean environment.
@@ -423,7 +423,7 @@ cosmogenic activation.
 
 One part of \textsc{Majorana}'s radiopurity campaign is a comprehensive parts tracking effort.
 Determining the activation rate of cosmogenic isotopes allows for an estimate of background
-radiation originating from detector components. \textsc{Majorana} has developed a CouchDB  REF [http://guide.couchdb.org/] based 
+radiation originating from detector components. \textsc{Majorana} has developed a CouchDB  \cite{couchdb_guide} based 
 parts tracking database (PTDB)
 for tracking parts used in the construction of the experiment, with a web-application frontend
 for data entry and a Python based exposure calculator. Storage and transportation history are
@@ -454,7 +454,7 @@ with a common provenience in a bag and detailing the information on the bag.
 
 Addresses of relevant locations are stored in a document in \textsc{Majorana}'s PTDB and storage and transportation history
 entries reference these locations. \textsc{Majorana}'s exposure calculation software uses the 
-Google Maps Application Programming Interfaces (APIs) REF [https://developers.google.com/maps/documentation/javascript/tutorial] to convert these addresses into latitutdes, longtitudes, and elevations,
+Google Maps Application Programming Interfaces (APIs) \cite{google_maps_dev_guide} to convert these addresses into latitutdes, longtitudes, and elevations,
 as well as provide sampled travel route information. The elevation versus time
 profile is used to calculate an estimate for activation rates of cosmogenic isotopes in tracked components.
 
@@ -597,7 +597,7 @@ HTTP is the interface of the web and interactions with CouchDB are handled with 
 requests such as GET, PUT, POST, and DELETE. Document identity is specified with a Universal Resource Identifier (URI).
 
 Besides directly requesting a document at a given URI, CouchDB takes advantage of the MapReduce paradigm for data
-queries. MapReduce is an approach which optimizes a given query for parallel/cluster computing. REF [http://dl.acm.org.libproxy.lib.unc.edu/citation.cfm?id=2094118] First a map function
+queries. MapReduce is an approach which optimizes a given query for parallel/cluster computing \cite{mapreduce_dean}. First a map function
 is defined which is applied to all of the data in the database. It filters and sorts documents and returns key-value
 pairs. For instance, a user may wish to return all database documents of some type, with a specific attribute used as
 a key to access the filtered documents. The map step performs logical comparisons on the database records and
@@ -607,7 +607,7 @@ The reduce step takes the output of the map function and summarizes the result. 
 of key-value pairs, it returns a single value from an operation performed on the result from the map step. The reduce
 step is optional and not all queries require one. MapReduce is implemented in CouchDB with view documents. Each has
 a map and reduce JavaScript function, and only the map function is required. View results are updated incrementally as
-documents change or are added to the database and results are cached, reducing view result build time REF [http://guide.couchdb.org/draft/views.html].
+documents change or are added to the database and results are cached, reducing view result build time \cite{couchdb_guide}.
 
 Updates to documents stored in CouchDB are handled through multi-version concurrency control (MVCC). Using MVCC
 circumvents the needs for file locks while writing to the database. Rather than locking a database record during
@@ -981,20 +981,9 @@ The authors would like to thank...
 % http://www.ctan.org/tex-archive/biblio/bibtex/contrib/doc/
 % The IEEEtran BibTeX style support page is at:
 % http://www.michaelshell.org/tex/ieeetran/bibtex/
-%\bibliographystyle{IEEEtran}
+\bibliographystyle{IEEEtran}
 % argument is your BibTeX string definitions and bibliography database(s)
-%\bibliography{IEEEabrv,../bib/paper}
-%
-% <OR> manually copy in the resultant .bbl file
-% set second argument of \begin to the number of references
-% (used to reserve space for the reference number labels box)
-\begin{thebibliography}{1}
-
-\bibitem{IEEEhowto:kopka}
-H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
-  0.5em minus 0.4em\relax Harlow, England: Addison-Wesley, 1999.
-
-\end{thebibliography}
+\bibliography{ksnavely_mjdb}
 
 % biography section
 % 
@@ -1007,20 +996,8 @@ H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
 %\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{mshell}}]{Michael Shell}
 % or if you just want to reserve a space for a photo:
 
-\begin{IEEEbiography}{Michael Shell}
-Biography text here.
-\end{IEEEbiography}
-
 % if you will not have a photo at all:
 \begin{IEEEbiographynophoto}{John Doe}
-Biography text here.
-\end{IEEEbiographynophoto}
-
-% insert where needed to balance the two columns on the last page with
-% biographies
-%\newpage
-
-\begin{IEEEbiographynophoto}{Jane Doe}
 Biography text here.
 \end{IEEEbiographynophoto}
 
