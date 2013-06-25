@@ -278,7 +278,7 @@
 
 
 % correct bad hyphenation here
-\hyphenation{op-tical net-works semi-conduc-tor}
+\hyphenation{}
 
 % Neutrinoless beta beta
 \def\znbb{0$\nu\beta\beta$}
@@ -335,8 +335,8 @@
 
 
 % The paper headers
-\markboth{Journal of \LaTeX\ Class Files,~Vol.~11, No.~4, December~2012}%
-{Shell \MakeLowercase{\textit{et al.}}: Bare Demo of IEEEtran.cls for Journals}
+\markboth{IEEE Transactions On Nuclear Science,~Vol.~11, No.~4, December~2012}%
+{Snavely \MakeLowercase{\textit{et al.}}: The \textsc{Majorana} Parts Tracking Database}
 % The only time the second header will appear is for the odd numbered pages
 % after the title page when using the twoside option.
 % 
@@ -386,11 +386,6 @@ achieving the extreme radiopurity required by such a rare decay search.
 IEEEtran, journal, \LaTeX, paper, template.
 \end{IEEEkeywords}
 
-
-
-
-
-
 % For peer review papers, you can put extra information on the cover
 % page as needed:
 % \ifCLASSOPTIONpeerreview
@@ -400,8 +395,6 @@ IEEEtran, journal, \LaTeX, paper, template.
 % For peerreview papers, this IEEEtran command inserts a page break and
 % creates the second title. It will be ignored for other modes.
 \IEEEpeerreviewmaketitle
-
-
 
 \section{Introduction}
 \IEEEPARstart{D}{etecting} neutrinoless double beta decay (\znbb) would reveal whether the neutrinos are their own antiparticles,
@@ -511,11 +504,20 @@ If a history entry is applied to an assembly, it is also applied to each compone
 a transportation history entry, each Detector String, Detector Unit, and Hollow Hex Rod currently in the tree will receive the same entry.
 
 \subsection{The Parts Tracking Web Application}
-A JavaScript based web application frontend has been developed by \textsc{Majorana} as an easy-to-use tool for data-entry.
+A JavaScript based web application frontend has been developed by \textsc{Majorana} as an easy-to-use tool for data-entry (see Fig. \ref{interface}).
 Adopting modern programming techniques, using CouchDB, and leveraging libraries like JQuery [http://jquery.com/] and Backbone.js [http://backbonejs.org/] allows the
 web application to be easily extendable and maintainable throughout the project lifetime. Calculation of
 activation rates is done with a small Python application which walks through data entered into the web
 frontend and calculation results are pushed to the CouchDB database.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=3.5in]{interface}
+\caption{A screenshot of the required forms of a part or assembly as presented to the user.
+These DateFormView instances are disabled for input. The part has a ``Not Engravable" flag,
+as it is too large to engrave. The CommentFormView expands when a user clicks on the text area.}
+\label{interface}
+\end{figure}
 
 As both client computers and data-serving cloud power grow, the web browser has become a
 platform for application development. Users can execute software without
@@ -528,7 +530,8 @@ CouchDB. CouchDB doesn't used Structured Query Language (it is a ``No SQL" datab
 rather is a document based database.
 Database management is minimized by using Cloudant as a data layer provider. Cloudant
 hosts clustered CouchDB instances and presents an API for interacting with the cluster
-as if it were a single CouchDB instance. 
+as if it were a single CouchDB instance. This eliminates a hardware bottleneck when executing
+resource intensive tasks without no added development work.
 
 Many web applications adopt what is known as model-view-controller (MVC) decomposition
 as a strategy for application structure. This approach seperates the data objects from
@@ -645,7 +648,8 @@ Form model objects) instances.
 An event such as transportation, storage, machining, or other process a part may undergo is represented by a 
 HistoryRecord object. Similar to a DBRecord, a HistoryRecord has a ``collection" attribute which points to a
 FormCollection for the particular history event type. DBRecords and HistoryRecords have APIs for rebuilding
-broken relationships (e.g. a child points to a parent, but the parent has no reference to the child), or querying
+broken relationships (e.g. a child points to a parent, but the parent has no reference to the child; caused by 
+unfinished linking operations due to browser crash, closing, etc...), or querying
 which assembly a PartRecord or AssemblyRecord is a member of.
 
 As the goal of the PTDB is to present a rich interface for data entry, forms
@@ -654,12 +658,12 @@ Form models contain the data and logic for presenting a rich user interface, but
 methods which manipulate the DOM (these exist in the FormView class tree).
 The simplest type of form is a textbox and label pair. The basic Form model class stores data 
 about the object -- its current value, the label and tooltip text,
-and a boolean value representing whether or not the model is valid.
+and a boolean value representing whether or not the model data was validated succesfully.
 
 More complex forms include dropdown boxes which contain options pulled from CouchDB. The model
 stores a reference to the correct type of options for the dropdown list. In addition, if the 
 desired option is not present the form can be switched into a textbox. The value entered by
-the user is sanitized and a key is generated based on the sanitized value. The new key-value
+the user is sanitized (non-alphanumerics are removed) and a key is generated based on the sanitized value. The new key-value
 pair is then written to the database and is present for future use.
 
 This database-active dropdown object is exploited for lists of locations (with address meta-data
@@ -829,7 +833,7 @@ its goals of probing the ultra-rare processes which shape the world around us.
 
 \begin{figure}[!p]
 \centering
-\includegraphics[width=7.5in]{Singletons}
+\includegraphics[height=3.75in]{Singletons}
 \caption{A structure diagram of important Collection singletons and their associated views. CollectionViews aggregate views for models in
 AbstractMediatorCollections. TabbedPagesView presents the tabbed page interface which is the primary point of interaction with users, and it
 does so by manipulating an internal CollectionView. HistoryCollection and RecordCollection inherit properties from AbstractMediatorCollection
@@ -837,11 +841,9 @@ and act as mediators, controlling the logic that links relatives, assembly compo
 \label{singletons}
 \end{figure}
 
-\clearpage
-
 \begin{figure}[!p]
 \centering
-\includegraphics[width=7.5in]{Models}
+\includegraphics[height=3.75in]{Models}
 \caption{The Form model inheritance tree. Each model has an attributes object containing the state of the model as well as the default
 view type to be used by the FormCollectionView instance which presents the model to the user. The tree of FormView objects closely mirrors
 the structure of the Form model tree.}
@@ -947,11 +949,43 @@ the structure of the Form model tree.}
 % starts a section numbered zero.)
 %
 
+\appendices
+\section{Software Libraries Used in the PTDB}
+\subsection{Web Application}
+\begin{itemize}
+  \item \textbf{JQuery} -- http://jquery.com/
+
+   JQuery is a popular JavaScript library which simplifies 
+   DOM interaction and AJAX requests. It also has a nice UI
+   toolkit which is used in the web application.
+  \item \textbf{Underscore.js} -- http://underscorejs.org/
+
+   Underscore is a great library for loop constructs and
+   functional programming style. It is required by Backbone.js.
+  \item \textbf{Backbone.js} -- http://backbonejs.org/
+
+   Backbone.js provides a model-view decomposition by providing
+   Model, View, and Collection prototype objects. It also provides
+   a Sync object for database interactions as well as a Router object
+   for URL fragment navigation and page history.
+\end{itemize}
+\subsection{Exposure Calculator}
+\begin{itemize}
+  \item \textbf{Twisted} -- http://twistedmatrix.com/trac/
+
+   Twisted is a Python network programming layer we use to serve
+   JSON exposure data via HTTP. At it's simplist, it turns a URI
+   request into function execution.
+\end{itemize}
+
 % use section* for acknowledgement
 \section*{Acknowledgment}
-
-
-The authors would like to thank...
+I would like to thank R. Henning and J. Wilkerson for all of their
+help and direction in my time at The University of North Carolina. Also
+thanks to M. Green, M. Busch, and R. Varner for providing great
+feedback during software development and putting the software to use.
+Everyone in \textsc{Majorana} and at SURF is owed thanks for being
+excellent scientists and coworkers. 
 
 
 % Can use something like this to put references on a page
