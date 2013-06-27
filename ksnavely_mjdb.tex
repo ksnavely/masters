@@ -537,6 +537,14 @@ platform for application development. Users can execute software without
 the need for code management and compiling, and technologies proven on the web such as HyperText Markup Language (HTML)
 and JavaScript can provide a graphical user interface and interactivity. 
 
+The PTDB web application takes an 
+Object-Oriented approach and it should be noted that JavaScript does not support class-based inheritance as
+in C++ (or similar languages), but rather implements behavior reuse through prototype-based inheritance. If a desired
+property is not found on an object the property access is delegated up the prototype chain. Traditional subclassing
+can be emulated by creating a new object and masking properties of the object's prototype.
+In this paper we will use the term class as a taxonomal reference and may speak of
+classes and prototype objects interchangeably.
+
 CouchDB has an interface based on the HyperText Transfer Protocol (HTTP) Representational State Transfer (REST) model,
 which is also used by the web. This allows applications which run in the browser to mesh naturally with CouchDB.
 Unlink Structured Query Language (SQL) databases, CouchDB stores information in JavaScript Object Notation (JSON)
@@ -634,7 +642,20 @@ the document is saved with a newly generated revision number.
 This allows database interactions to scale to large numbers of concurrent readers and writers.
 
 \subsubsection{Exposure Calculator}
-Words words words.
+In addition to the PTDB web application for data entry, we have created a Python program for
+examining records in the database and calculating activation rates based on storage and 
+transportation times and locations. The exposure calculator can crawl the database or can
+also be run in server mode, using the Twisted library, and accepts HTTP requests for
+exposure data. The locations record in the database contains addresses which
+are converted to latitude, longtitude, and elevation data using the Google Maps API. Elevation and time data can
+then be used to calculate expected activation rates for a given transportation route
+or storage event.
+
+Twisted is an event-driven network layer which can use many networking protocols. We've 
+choosen to use its HTTP functionality and and return exposure data as JSON strings. By
+using Twisted, our application gets multi-threaded concurrency for free. This allows
+the exposure calculator to take advantage of a multi-core processor when running in 
+server mode. Using the framework simply involves writing callback functions for the appropriate request URI.
 
 \section{Web Application Structure}
 The building blocks of the PTDB web application are the Backbone.Model subclasses. DBRecord models represent parts
