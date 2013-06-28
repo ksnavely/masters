@@ -313,6 +313,7 @@
 
 \author{Kyle~Snavely
 \thanks{Manuscript received ; .}}
+\thanks{This work was primarily supported by DOE grants no. DE-FG02-97ER4104 and DE-FG02-97ER41033}}
 
 % note the % following the last \IEEEmembership and also \thanks - 
 % these prevent an unwanted space from occurring between the last author name
@@ -383,7 +384,7 @@ achieving the extreme radiopurity required for this rare decay search.
 
 % Note that keywords are not normally used for peerreview papers.
 \begin{IEEEkeywords}
-IEEEtran, journal, \LaTeX, paper, template.
+  Low Background, Neutrinoless Double-Beta Decay, Web 2.0, Application Software
 \end{IEEEkeywords}
 
 % For peer review papers, you can put extra information on the cover
@@ -399,7 +400,7 @@ IEEEtran, journal, \LaTeX, paper, template.
 \section{Introduction}
 \IEEEPARstart{D}{etecting} neutrinoless double-beta decay (\znbb) would reveal whether neutrinos are their own antiparticle,
 whether lepton number is a conserved quantity, and may provide insight into
-the mass hiearchy of the neutrino family \cite{mj_wilkerson}.
+the mass hiearchy of the neutrino family \cite{phillips_mj} \cite{mj_wilkerson} \cite{avignone_neutrinos}.
 The \textsc{Majorana Demonstrator} is part of a phased approach towards a tonne-scale search for \znbb\ in \ge76, with
 a background goal of $2.5\times10^{-4}$ counts $keV^{-1} t^{-1} y^{-1}$ \cite{mj_wilkerson} in the region of interest
 around the \znbb\ signal at 2038 keV.
@@ -415,8 +416,8 @@ at the 4850' level of the Sanford Underground Research Facility (SURF).
 However, many parts may need to be transported or stored above ground and are subject to
 cosmogenic activation -- unstable isotopes in detector components created by cosmic radiation which may later decay and become background
 to physics measurements.
-The construction effort is taking place in a class 1000 clean evironment, including the electroforming
-of the most radiopure copper ever produced. REF Assay result?
+The construction effort is taking place in a cleanroom evironment, including the electroforming
+of the most radiopure copper ever produced \cite{phillips_mj}.
 
 Parts tracking pays dividends not only in logistics but can also help realize the background goal.
 Determining the activation rate of cosmogenic isotopes allows for an estimate of background
@@ -533,12 +534,14 @@ as it is too large to engrave. The CommentFormView expands when a user clicks on
 
 \subsubsection{JavaScript and Web Applications}
 As both client computers and data-serving cloud power grow, the web browser has become a
-platform for application development. Users can execute software without
+platform for application development. Web applications and services are undergoing
+a drastic departure from their humble beginnings \cite{ginige_web}. Users can run software without
 the need for code management and compiling, and technologies proven on the web such as HyperText Markup Language (HTML)
 and JavaScript can provide a graphical user interface and interactivity. 
 
-The PTDB web application takes an 
-Object-Oriented approach and it should be noted that JavaScript does not support class-based inheritance as
+The parts tracking database web portal is a data-centric workflow driven application -- it is designed
+to allow scientists to record important data and present a useful interface for data inspection. The software takes an 
+object-oriented approach and it should be noted that JavaScript does not support class-based inheritance as
 in C++ (or similar languages), but rather implements behavior reuse through prototype-based inheritance. If a desired
 property is not found on an object the property access is delegated up the prototype chain. Traditional subclassing
 can be emulated by creating a new object and masking properties of the object's prototype.
@@ -572,9 +575,10 @@ built in getter and setter functions which take an attribute key or key-value Ja
 respectively. When an attribute is changed, the model fires a change event, which is picked
 up by any View objects listening to that model.
 
-The Backbone View, in turn, will refresh the UI on model change. The view contains a render
-method which updates the HTML on the page. The view objects also contain logic and functions
-for interaction with the Document Object Model (DOM). Though a view has a reference to the model object it represents,
+The Backbone View, in turn, will refresh the UI on model change. 
+The view objects contain logic and functions
+for interaction with the Document Object Model (DOM), the objects which represent page content. 
+Though a view has a reference to the model object it represents,
 the link may only be used for querying model state. Not allowing the view to directly manipulate
 the model is an important aspect of MVC decomposition. Instead, to change a model's state the
 view will notify a Collection object which contains a related set of Model objects.
@@ -620,10 +624,9 @@ Besides directly requesting a document at a given URI, CouchDB takes advantage o
 queries. MapReduce is an approach which optimizes a given query for parallel/cluster computing \cite{mapreduce_dean}. First a map function
 is defined which is applied to all of the data in the database. It filters and sorts documents and returns key-value
 pairs. For instance, a user may wish to return all database documents of some type, with a specific attribute used as
-a key to access the filtered documents. The map step performs logical comparisons on the database records and
-returns a key and value.
+a key to access the filtered documents. 
 
-The reduce step takes the output of the map function and summarizes the result. Rather than returning a dictionary
+The reduce step takes the output of the map function (sorted key-value pairs) and summarizes the result. Rather than returning a dictionary
 of key-value pairs, it returns a single value. The reduce
 step is optional and not all queries require one. MapReduce is implemented in CouchDB with view documents. Each view has
 a map and reduce JavaScript function, and only the map function is required. View results are updated incrementally as
@@ -679,14 +682,14 @@ The Backbone.Router subclass MJDBRouter provides a mapping from URI navigation t
 \subsection{Models}
 The real-life items of interest in the parts tracking database are the parts and assemblies which compose
 the experiment's hardware. These items are represented in the web application by the DBRecord model type, which is
-the parent of PartRecord and AssemblyRecord. The attributes of these models point to FormCollection (which holds
+the parent of PartRecord and AssemblyRecord. The attributes of these models point to FormCollection (which hold
 Form model objects) instances.
 
 An event such as transportation, storage, machining, or other process a part may undergo is represented by a 
 HistoryRecord object. Similar to a DBRecord, a HistoryRecord has a ``collection" attribute which points to a
 FormCollection for the particular history event type. DBRecords and HistoryRecords have APIs for rebuilding
 broken relationships (e.g. a child points to a parent, but the parent has no reference to the child; caused by 
-unfinished linking operations due to browser crash, closing, etc...), or querying
+unfinished linking operations due to browser crash, closing the page, etc...), or querying
 which assembly a PartRecord or AssemblyRecord is a member of.
 
 As the goal of the PTDB is to present a rich interface for data entry, forms
@@ -740,13 +743,14 @@ data entry during parts production easier, assembly members may not be cloned.
 \subsection{Collections}
 The tracking logic (linking relatives, assembly components, and history entries) is controlled
 by singletons which subclass the AbstractMediatorCollection class (see Fig. \ref{singletons}). This class is a Backbone.Collection
-which extends the Backbone.Events API, and acts a mediator between DBRecord (parts and assemblies) or
+which has been extended with the Backbone.Events API, and acts a mediator between DBRecord (parts and assemblies) or
 HistoryRecord instances. The singletons are notified by events from models or views and carry out the needed
 linking operations.
 
 The AbstractMediatorCollection class also extends the
 Backbone.Collection.get API for ease of use. An option can be passed to the get method which
-specifies whether to automatically open a record from the database.
+specifies whether or not to open a record from the database if it is not currently a member
+of the collection.
 A factory method on the collection examines the JSON
 fetched from CouchDB and creates an instance of the correct type, adding the new model
 to the collection. 
@@ -761,7 +765,7 @@ desired Form model.
 
 \subsection{Views}
 The views have access to the Backbone.Events API and listen for changes in model attributes. If a change is detected,
-the view is rerendered. User interaction with DOM elements triggers events which are caught by the view and the appropriate
+the view is rerendered. User interaction with DOM elements trigger events which are caught by the view and the appropriate
 functions are run. To modify DBRecord and/or HistoryRecord models (other than direct data entry) views pass messages to 
 RecordCollection or HistoryCollection which prescribed linking interactions between models.
 
@@ -769,7 +773,7 @@ The CollectionView class holds views for models stored in AbstractMediatorCollec
 are held by a CollectionView, for instance. A tabbed interface is presented by TabbedPagesView,
 which holds a CollectionView for part and assembly record views. Views which do not represent objects in the database, like those
 for help or contact tabs, are also contained in TabbedPagesView. The history CollectionView and TabbedPagesView
-listen for ``add" events on their respective collections and add views for the added models as need.
+listen for ``add" events on their respective collections and create views for the added models as need.
 
 As the Form models are designed around a certain user experience, there is a set of views with parent class
 FormView which mirrors the Form model inheritence tree. There is no such expectation for DBRecord models and
@@ -778,17 +782,17 @@ through the TabbedPagesView interface.
 
 Though history records are shared among parts, one view per open history model is used to represent each history
 record. The view for a particular history entry is shared among various part/assembly views. This ensures the absence of
-stale views/information in the application.
+stale views/information in the application and reduces memory needs and view updates.
 
 \subsection{Other Objects}
 Data validation is handled by a singleton class (Validator) and the Backbone.Model validate API. The validate
-method of model objects delegate to the appropriate Validator method.
+method of model objects delegates to the appropriate Validator method.
 A regular expression test is done and the result returned. The Validator singleton
 allows for all regular expressions needed for validation to be present in a single object, reducing scattered
 regular expression patterns in the application. Invalid data triggers view notifcation and can, for instance, turn backgrounds 
 red to notify the user that something has gone wrong. Invalid data can prevent record saving, or relative/history linking.
 
-Database and AJAX interactions are abstracted with the DBController singleton. It allows for error-handling during saving or 
+Database interactions are abstracted with the DBController singleton. It allows for error-handling during saving or 
 opening documents, and requesting view results, to be primarily in a single object. It also has methods for generating new part, assembly, or history
 entry serial numbers, as well as for cloning and adding to DB-active lists.
 
@@ -993,33 +997,37 @@ the structure of the Form model tree.}
   \item \textbf{JQuery} -- http://jquery.com/
 
    JQuery is a popular JavaScript library which simplifies 
-   DOM interaction and AJAX requests. It also has a nice UI
-   toolkit which is used in the web application.
+   DOM interaction, AJAX requests, and simple UI effects.
+   The JQuery UI toolkit is also used for the datepicker
+   calendar functionality.
   \item \textbf{Underscore.js} -- http://underscorejs.org/
 
-   Underscore is a great library for loop constructs and
-   functional programming style. It is required by Backbone.js.
+   Underscore is a JavaScript utility library used for common
+   tasks and lending a functional programming style where
+   desired.
+   It is required by Backbone.js.
   \item \textbf{Backbone.js} -- http://backbonejs.org/
 
    Backbone.js provides a model-view decomposition by providing
    Model, View, and Collection prototype objects. It also provides
    a Sync object for database interactions as well as a Router object
-   for URL fragment navigation and page history.
+   for URL fragment navigation and page history. 
 \end{itemize}
 \subsection{Exposure Calculator}
 \begin{itemize}
   \item \textbf{Twisted} -- http://twistedmatrix.com/trac/
 
    Twisted is a Python network programming layer we use to serve
-   JSON exposure data via HTTP. At it's simplist, it turns a URI
-   request into function execution.
+   JSON exposure data via HTTP. It is an event-driven library which
+   turns URI requests into function execution, and returns data
+   to the requester.
 \end{itemize}
 
 % use section* for acknowledgement
 \section*{Acknowledgment}
-I would like to thank R. Henning and J. Wilkerson for all of their
-help and direction in my time at The University of North Carolina. Also
-thanks to M. Green, M. Busch, and R. Varner for providing great
+The authors would like to thank the members of the \textsc{Majorana} collaboration
+for their guidance while developing the PTDB software.
+A special thanks to M. Green, M. Busch, and R. Varner for providing great
 feedback during software development and putting the software to use.
 Everyone in \textsc{Majorana} and at SURF is owed thanks for being
 excellent scientists and coworkers. 
