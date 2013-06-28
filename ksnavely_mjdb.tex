@@ -312,7 +312,7 @@
 %
 
 \author{Kyle~Snavely
-\thanks{Manuscript received ; .}}
+\thanks{Manuscript received ; .}
 \thanks{This work was primarily supported by DOE grants no. DE-FG02-97ER4104 and DE-FG02-97ER41033}}
 
 % note the % following the last \IEEEmembership and also \thanks - 
@@ -376,7 +376,7 @@ used in the experiment's construction.
 The \textsc{Majorana} parts tracking database is an application which tracks
 cosmogenic activation in materials and parts used to build the \textsc{Demonstrator}.
 Tracking the location of parts as they are produced and shipped provides an estimate
-of their exposure to cosmic radiation. Access to part data also provides
+of their exposure to cosmic radiation and 
 an important quality assurance check during construction. A web application for data entry
 and a radiation exposure calculator have been developed as tools for
 achieving the extreme radiopurity required for this rare decay search.
@@ -398,16 +398,14 @@ achieving the extreme radiopurity required for this rare decay search.
 \IEEEpeerreviewmaketitle
 
 \section{Introduction}
-\IEEEPARstart{D}{etecting} neutrinoless double-beta decay (\znbb) would reveal whether neutrinos are their own antiparticle,
-whether lepton number is a conserved quantity, and may provide insight into
+\IEEEPARstart{D}{etecting} neutrinoless double-beta decay (\znbb) would prove that neutrinos are their own antiparticle,
+demonstrate that lepton number is a conserved quantity, and may provide insight into
 the mass hiearchy of the neutrino family \cite{phillips_mj} \cite{mj_wilkerson} \cite{avignone_neutrinos}.
 The \textsc{Majorana Demonstrator} is part of a phased approach towards a tonne-scale search for \znbb\ in \ge76, with
 a background goal of $2.5\times10^{-4}$ counts $keV^{-1} t^{-1} y^{-1}$ \cite{mj_wilkerson} in the region of interest
 around the \znbb\ signal at 2038 keV.
-The \textsc{Demonstrator}'s extreme radiopurity requirements also make it competitive in the search for dark
+The \textsc{Demonstrator}'s extreme radiopurity requirements and low energy threshold also make it competitive in the search for dark
 matter candidate particles known as Weakly Interacting Massive Particles (WIMPs).
-WIMPs are a leading candidate for the composition of dark matter,
-which composes 26.8\% \cite{darkmatter_bertone} \cite{plank_results} of the mass-energy density in the universe.
 
 Achieving this low background goal requires a multifaceted strategy including shielding, assembly in a clean environment,
 careful materials choice, and a comprehensive parts tracking effort.
@@ -469,7 +467,7 @@ present in smaller amounts. Electromformed copper is visually indistinguishable 
 tracking is vital.
 
 The parent-child relationship is strictly one to many. No part can have more than one parent, as the parent-child link
-represents a reducing process, such as machining parts or cutting cables. A part which is made from more than one individual
+represents a reducing process, such as machining parts or cutting cables. An object which is made from more than one individual
 component is known as an assembly and the PTDB handles such relationships. A part can be a member of only one assembly,
 and an assembly may be a component of another assembly.
 
@@ -542,7 +540,7 @@ and JavaScript can provide a graphical user interface and interactivity.
 The parts tracking database web portal is a data-centric workflow driven application -- it is designed
 to allow scientists to record important data and present a useful interface for data inspection. The software takes an 
 object-oriented approach and it should be noted that JavaScript does not support class-based inheritance as
-in C++ (or similar languages), but rather implements behavior reuse through prototype-based inheritance. If a desired
+in C++ (or similar languages), but rather implements behavior reuse through prototype-based inheritance \cite{gama_js_objects}. If a desired
 property is not found on an object the property access is delegated up the prototype chain. Traditional subclassing
 can be emulated by creating a new object and masking properties of the object's prototype.
 In this paper we will use the term class as a taxonomal reference and may speak of
@@ -550,7 +548,7 @@ classes and prototype objects interchangeably.
 
 CouchDB has an interface based on the HyperText Transfer Protocol (HTTP) Representational State Transfer (REST) model,
 which is also used by the web. This allows applications which run in the browser to mesh naturally with CouchDB.
-Unlink Structured Query Language (SQL) databases, CouchDB stores information in JavaScript Object Notation (JSON)
+Unlink Structured Query Language (SQL) databases, CouchDB stores information in JavaScript Object Notation (JSON) \cite{json}
 documents. 
 Database management is minimized by using Cloudant as a data layer provider. Cloudant
 hosts clustered CouchDB instances and presents an API for interacting with the cluster
@@ -562,7 +560,7 @@ as a strategy for application structure. This approach seperates the data object
 their representation. In the web environment this is a natural strategy as view information
 may deal with HTML and Cascading Style Sheets (CSS), which are entirely seperate from the data's area of concern.
 The MVC decomposition was a natural evolution in software stemming from design by
-seperation of responsibility and the development of graphical user interfaces. Many different realizations
+seperation of responsibility and the development of graphical user interfaces \cite{krasner1988description}. Many different realizations
 of the concept exists under various names, and here we will use the term MVC decomposition to imply
 a model-view seperation without specifying a strict controller role.
 
@@ -572,7 +570,7 @@ objects with APIs designed for use together.
 The Backbone Model 
 object has a set of attributes (defined by the developer) which are interacted with through
 built in getter and setter functions which take an attribute key or key-value JavaScript Object Notation (JSON) object literal,
-respectively. When an attribute is changed, the model fires a change event, which is picked
+respectively. When an attribute is changed, the model triggers a change event, which is picked
 up by any View objects listening to that model.
 
 The Backbone View, in turn, will refresh the UI on model change. 
@@ -841,7 +839,7 @@ manually for an accurate estimate of exposure to cosmic radiation.
 
 Neutrinoless double-beta decay, if it exists, is an exceedingly rare process.
 To make a measurement or set a limit on \znbb\ or on dark matter interactions 
-requires \textsc{Majorana} to reach very low background levels. A parts tracking effort which allows material type,
+requires the \textsc{Majorana Demonstrator} to reach very low background levels. A parts tracking effort which allows material type,
 storage and location history, or other processes undergone to be recorded and
 accessed by users or computer programs has proven to be an effective tool in a comprehensive
 radiopurity campiagn. In addition, tracking detector components presents a significant
@@ -863,12 +861,9 @@ alternative to the traditional SQL based database solution.
 
 Low-background physics experiments can benefit greatly from comprehensive
 parts and materials tracking efforts like \textsc{Majorana}'s parts tracking database.
-Tracking data can provide estimates of cosmogenic radiation in detector components,
-a possible significant source of background. In addition, knowledge of material type
-(e.g. underground electroformed copper v. commercial) is crucial as two radio-dissimilar 
-parts may appear otherwise identical after machining. The parts tracking database is a 
-key component of \textsc{Majorana}'s radiopurity campaign and will help the collaboration achieve
-its goals of probing the ultra-rare processes which shape the world around us.
+The parts tracking database is a 
+key component of the \textsc{Demonstrator}'s radiopurity campaign and will help the collaboration achieve
+its goals of probing ultra-rare processes.
 
 \clearpage
 
