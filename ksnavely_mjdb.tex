@@ -658,6 +658,18 @@ using Twisted, our application gets multi-threaded concurrency for free. This al
 the exposure calculator to take advantage of a multi-core processor when running in 
 server mode. Using the framework simply involves writing callback functions for the appropriate request URI.
 
+Because more than one part may be linked to a history event, the calculated exposure is
+stored in the storage/transportation records, along with a calculation timestamp, or a flag
+if something has gone wrong during calculation. When not operating in server mode, the Python
+exposure calculator crawls the history records of the database and calculates exposure for
+new history entries or if a particular entry's timestamp is out of date. 
+
+Exposure data are also added to part records, but again the calculation is based on history
+entry data. If a new history entry is added (or the timestamp is out of date) the part
+exposure will be updated on the next crawl. The Google Maps API returns multiple possible
+routes between two locations and the correct route must be choosen or created
+manually for an accurate estimate of exposure to cosmic radiation.
+
 \section{Web Application Structure}
 The building blocks of the PTDB web application are the Backbone.Model subclasses. DBRecord models represent parts
 and assemblies and their attributes point to FormCollection instances. HistoryRecords provide an interface for manipulating 
@@ -806,34 +818,6 @@ updating the address-bar when searching the database so the view type and keys a
 acts on a message (the route navigated to, causing function execution with optional arguments) while displaying the message (route)
 to the user in the navigation bar.
 
-\section{Exposure Calculator}
-
-In addition to the PTDB web application for data entry, we have created a Python program for
-examining records in the database and calculating activation rates based on storage and 
-transportation times and locations. The exposure calculator can crawl the database or can
-also be run in server mode, using the Twisted library, and accepts HTTP requests for
-exposure data. The locations record in the database contains addresses which
-are converted to latitude, longtitude, and elevation data using the Google Maps API. Elevation and time data can
-then be used to calculate expected activation rates for a given transportation route
-or storage event.
-
-Twisted is an event-driven network layer which can use many networking protocols. We've 
-choosen to use its HTTP functionality and and return exposure data as JSON strings. By
-using Twisted, our application gets multi-threaded concurrency for free. This allows
-the exposure calculator to take advantage of a multi-core processor when running in 
-server mode. Using the framework simply involves writing callback functions for the appropriate request URI.
-
-Because more than one part may be linked to a history event, the calculated exposure is
-stored in the storage/transportation records, along with a calculation timestamp, or a flag
-if something has gone wrong during calculation. When not operating in server mode, the Python
-exposure calculator crawls the history records of the database and calculates exposure for
-new history entries or if a particular entry's timestamp is out of date. 
-
-Exposure data are also added to part records, but again the calculation is based on history
-entry data. If a new history entry is added (or the timestamp is out of date) the part
-exposure will be updated on the next crawl. The Google Maps API returns multiple possible
-routes between two locations and the correct route must be choosen or created
-manually for an accurate estimate of exposure to cosmic radiation.
 
 \section{Conclusion}
 
@@ -1021,11 +1005,8 @@ the structure of the Form model tree.}
 % use section* for acknowledgement
 \section*{Acknowledgment}
 The authors would like to thank the members of the \textsc{Majorana} collaboration
-for their guidance while developing the PTDB software.
-A special thanks to M. Green, M. Busch, and R. Varner for providing great
-feedback during software development and putting the software to use.
-Everyone in \textsc{Majorana} and at SURF is owed thanks for being
-excellent scientists and coworkers. 
+for their guidance while developing the PTDB software. Thanks also
+to J. Esterline for his development contributions and help during testing.
 
 
 % Can use something like this to put references on a page
