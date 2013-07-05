@@ -403,28 +403,26 @@ demonstrate that lepton number is not conserved, and may provide insight into
 the mass hiearchy of the neutrino family \cite{phillips_mj} \cite{mj_wilkerson} \cite{avignone_neutrinos}.
 The \textsc{Majorana Demonstrator} is part of a phased approach towards a tonne-scale search for \znbb\ in \ge76, with
 a background goal of $2.5\times10^{-4}$ counts $keV^{-1} t^{-1} y^{-1}$ \cite{mj_wilkerson} in the region of interest
-around the \znbb\ signal at 2038 keV.
-The \textsc{Demonstrator}'s extreme radiopurity requirements and low energy threshold also make it competitive in the search for dark
+around the \znbb\ signal at 2039 keV.
+The \textsc{Demonstrator}'s extreme radiopurity requirements and low energy threshold also make it sensitive to a signal from dark
 matter candidate particles known as Weakly Interacting Massive Particles (WIMPs).
 
-Achieving this low background goal requires a multifaceted strategy including shielding, assembly in an ultra-clean environment,
-careful materials choice, and a comprehensive parts tracking effort.
-To shield the experiment from radiation, it is located deep underground
+Achieving this low background goal requires a multifaceted strategy including detector shielding, assembly in an ultra-clean environment,
+careful materials screening, and a comprehensive parts tracking effort.
+To minimize backgrounds from cosmic radiation the \textsc{Demonstrator} is located deep underground
 at the 4850' level of the Sanford Underground Research Facility (SURF).
-However, many parts may need to be transported or stored above ground and are subject to
+However, many parts need to be transported or stored above ground and are subject to
 cosmogenic activation -- unstable isotopes in detector components created by cosmic radiation which may later decay and become background
 to physics measurements.
-The construction effort is taking place in a cleanroom evironment, including the electroforming
-of the most radiopure copper ever produced \cite{phillips_mj}.
 
-Parts tracking pays dividends not only in logistics but can also help realize the background goal.
+Parts tracking is essential to realizing the \textsc{Demonstrator}'s background goal and controlling logistics.
 Determining the activation rate of cosmogenic isotopes allows for an estimate of background
 radiation originating from detector components. \textsc{Majorana} has developed a CouchDB  \cite{couchdb_guide} based 
 parts tracking database (PTDB)
 for tracking parts used in the construction of the experiment. The PTDB has a web-application frontend
-for data entry and a Python based exposure calculator that converts storage and transportation history 
+for data entry and a Python based exposure calculator. The exposure calculator converts storage and transportation history 
 into time and elevation profiles which can be used to estimate
-material activity.
+material activity which can be folding into monte-carlo background simulations.
 
 Tracking components also plays an important role in quality assurance during 
 construction. A part's history (cleaning, transportation, etc...) must be 
@@ -444,27 +442,29 @@ is noted and material type inherited. Throughout the part's lifetime it receives
 and transportation to processes which a part may undergo including cleaning, machining, and many others.
 
 Detailed part histories will allow \textsc{Majorana}
-to red-flag parts which may be excessively radioactive, or aid in troubleshooting if a source of background
-is found within the experiment.
+to red-flag parts which may be excessively radioactive, allow for comprehensive background simulations,
+or aid in troubleshooting if a source of background is found within the experiment.
 Part history is also referenced during construction to ensure components meet quality requirements.
 
 \subsection{Logistics Overview}
 
 To uniquely identify parts and stock used by \textsc{Majorana} a serial number is laser engraved into metal and plastic parts.
 Some parts are too large or small to be easily engraved, or are otherwise unsuitable for laser engraving, and these
-components can be identified through metal stamping or affixing labels. Groups of small identical parts are often bagged together
-and a range of serial numbers listed on the bag.
+components are identified by metal stamps or labels. Groups of small identical parts are bagged together
+and a range of serial numbers is listed on the bag.
+
+There are many materials used in the \textsc{Demonstrator}, but the The bulk of the mass of the \textsc{Demonstrator}'s components is copper.
+Steel, teflon, and other plastics are 
+present in smaller amounts. Majorana electroforms the worlds purest copper in its undeground electroforming facility, also at SURF \cite{mj_wilkerson}.
+This ultra-pure copper is visually indistinguishable from commercial copper and so material
+tracking is vital.
+
 
 \textsc{Majorana} manufactures its own detector components deep underground in its clean machine shop, and tracking the 
-flow of stock material to finished parts is an important resposibility of the PTDB. This is especially important in the case of
-copper, as there must be no question as to whether a copper component is machined from commercial copper stock or
-\textsc{Majorana}'s own ultra-pure underground electroformed copper. Thus, the stock and part relationship is also tracked using
-the PTDB web interface. 
-
-When a stock-part relationship is established (known generally as parent-child), the child inherits the parent record's
-material type. The bulk of the mass of \textsc{Majorana}'s components is copper, though steel, teflon, and other plastics are 
-present in smaller amounts. Electromformed copper is visually indistinguishable from commercial copper and so material
-tracking is vital.
+flow of stock material to finished parts is an important resposibility of the PTDB.
+Thus, the stock and part relationship is also tracked
+within the PTDB.  When a stock-part relationship is established (known generally as parent-child),
+the child inherits the parent record's material type. 
 
 The parent-child relationship is strictly one to many. No part can have more than one parent, as the parent-child link
 represents a reducing process, such as machining parts or cutting cables. An object which is made from more than one individual
@@ -539,9 +539,9 @@ and JavaScript can provide a graphical user interface and interactivity.
 
 The parts tracking database web portal is a data-centric workflow driven application -- it is designed
 to allow scientists to record important data and present a useful interface for data inspection. The software takes an 
-object-oriented approach and it should be noted that JavaScript does not support class-based inheritance as
+object-oriented approach. It should be noted that JavaScript does not support class-based inheritance as
 in C++ (or similar languages), but rather implements behavior reuse through prototype-based inheritance \cite{gama_js_objects}. If a desired
-property is not found on an object the property access is delegated up the prototype chain. Traditional subclassing
+property is not found on an object, the property access is delegated up the prototype chain. Traditional subclassing
 can be emulated by creating a new object and masking properties of the object's prototype.
 In this paper we will use the term class as a taxonomal reference and may speak of
 classes and prototype objects interchangeably.
@@ -568,14 +568,14 @@ The parts tracking database uses a MVC framework known as Backbone.js. Backbone 
 base Model, View, and Collection (lacking an explicit controller class)
 objects with APIs designed for use together. 
 The Backbone Model 
-object has a set of attributes (defined by the developer) which are interacted with through
-built in getter and setter functions which take an attribute key or key-value JavaScript Object Notation (JSON) object literal,
-respectively. When an attribute is changed, the model triggers a change event, which is picked
+object has a set of attributes (defined by the developer) which are accessed through
+built in getter and setter functions.
+When an attribute is changed, the model triggers a change event, which is picked
 up by any View objects listening to that model.
 
 The Backbone View, in turn, will refresh the UI on model change. 
 The view objects contain logic and functions
-for interaction with the Document Object Model (DOM), the objects which represent page content. 
+for interactions with the Document Object Model (DOM), the objects which represent page content. 
 Though a view has a reference to the model object it represents,
 the link may only be used for querying model state. Not allowing the view to directly manipulate
 the model is an important aspect of MVC decomposition. Instead, to change a model's state the
@@ -610,8 +610,7 @@ CouchDB stores database records as JSON documents. JSON provides a human-readabl
 standard for data representation which is a subset of JavaScript syntax. Data are represented as object
 literals which map key strings to values, which may be strings, numbers, arrays, or other object literals. 
 JSON parses naturally into JavaScript objects and other languages, such as Python, have easy-to-use
-JSON parsing libraries. Working with a JSON object is very similar to interaction with hash-maps or 
-dictionaries in Python.
+JSON parsing libraries. 
 
 Accessing the JSON documents in a CouchDB database is done via HTTP/REST. The REST model prescribes a client-server
 relationship in which state (database records for instance) is requested through an interface.
@@ -653,8 +652,8 @@ then be used to calculate expected activation rates for a given transportation r
 or storage event.
 
 Twisted is an event-driven network layer which can use many networking protocols. We've 
-choosen to use its HTTP functionality and and return exposure data as JSON strings. By
-using Twisted, our application gets multi-threaded concurrency for free. This allows
+choosen to use its HTTP functionality and return exposure data as JSON strings. By
+using Twisted, our application gets multi-threaded concurrency, allowing
 the exposure calculator to take advantage of a multi-core processor when running in 
 server mode. Using the framework simply involves writing callback functions for the appropriate request URI.
 
