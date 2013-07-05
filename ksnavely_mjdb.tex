@@ -399,7 +399,7 @@ achieving the extreme radiopurity required for this rare decay search.
 
 \section{Introduction}
 \IEEEPARstart{D}{etecting} neutrinoless double-beta decay (\znbb) would prove that neutrinos are their own antiparticle,
-demonstrate that lepton number is a conserved quantity, and may provide insight into
+demonstrate that lepton number is not conserved, and may provide insight into
 the mass hiearchy of the neutrino family \cite{phillips_mj} \cite{mj_wilkerson} \cite{avignone_neutrinos}.
 The \textsc{Majorana Demonstrator} is part of a phased approach towards a tonne-scale search for \znbb\ in \ge76, with
 a background goal of $2.5\times10^{-4}$ counts $keV^{-1} t^{-1} y^{-1}$ \cite{mj_wilkerson} in the region of interest
@@ -407,7 +407,7 @@ around the \znbb\ signal at 2038 keV.
 The \textsc{Demonstrator}'s extreme radiopurity requirements and low energy threshold also make it competitive in the search for dark
 matter candidate particles known as Weakly Interacting Massive Particles (WIMPs).
 
-Achieving this low background goal requires a multifaceted strategy including shielding, assembly in a clean environment,
+Achieving this low background goal requires a multifaceted strategy including shielding, assembly in an ultra-clean environment,
 careful materials choice, and a comprehensive parts tracking effort.
 To shield the experiment from radiation, it is located deep underground
 at the 4850' level of the Sanford Underground Research Facility (SURF).
@@ -423,7 +423,7 @@ radiation originating from detector components. \textsc{Majorana} has developed 
 parts tracking database (PTDB)
 for tracking parts used in the construction of the experiment. The PTDB has a web-application frontend
 for data entry and a Python based exposure calculator that converts storage and transportation history 
-into time and elevation profiles which can be used to limit
+into time and elevation profiles which can be used to estimate
 material activity.
 
 Tracking components also plays an important role in quality assurance during 
@@ -440,11 +440,11 @@ on the benefits of tracking part history for the \textsc{Demonstrator}.
 
 \section{Parts Tracking}
 When a part is created for the \textsc{Demonstrator}, it is given a unique serial number by the PTDB. The parent stock
-is noted and material type inherited. Throught the part's lifetime it receives history entries which range from storage
+is noted and material type inherited. Throughout the part's lifetime it receives history entries which range from storage
 and transportation to processes which a part may undergo including cleaning, machining, and many others.
 
 Detailed part histories will allow \textsc{Majorana}
-to red-flag parts which may be highly radioactive, or aid in troubleshooting if a source of background
+to red-flag parts which may be excessively radioactive, or aid in troubleshooting if a source of background
 is found within the experiment.
 Part history is also referenced during construction to ensure components meet quality requirements.
 
@@ -487,9 +487,9 @@ If a history entry is applied to an assembly, it is also applied to each compone
 a transportation history entry, each Detector String, Detector Unit, and Hollow Hex Rod currently in the tree will receive the same entry.
 
 The are many types of history entries, including storage and transporation (which are used to estimate cosmogenic activation), machining, cleaning,
-and others. A history entry references one or more locations which are stored in document in the database. Each location has address meta-data
+and others. A history entry references one or more locations which are stored in a document in the database. Each location has address meta-data
 associated with it, and \textsc{Majorana}'s exposure calculation software uses the 
-Google Maps Application Programming Interfaces (APIs) \cite{google_maps_dev_guide} to convert these addresses into latitutdes, longtitudes, and elevations,
+Google Maps Application Programming Interface (API) \cite{google_maps_dev_guide} to convert these addresses into latitutdes, longtitudes, and elevations,
 as well as provide sampled travel route information. The elevation versus time
 profile is used to calculate an estimate of activation rates for cosmogenic isotopes in tracked components.
 
@@ -548,20 +548,20 @@ classes and prototype objects interchangeably.
 
 CouchDB has an interface based on the HyperText Transfer Protocol (HTTP) Representational State Transfer (REST) model,
 which is also used by the web. This allows applications which run in the browser to mesh naturally with CouchDB.
-Unlink Structured Query Language (SQL) databases, CouchDB stores information in JavaScript Object Notation (JSON) \cite{json}
+Unlike Structured Query Language (SQL) databases, CouchDB stores information in JavaScript Object Notation (JSON) \cite{json}
 documents. 
 Database management is minimized by using Cloudant as a data layer provider. Cloudant
 hosts clustered CouchDB instances and presents an API for interacting with the cluster
 as if it were a single CouchDB instance. This eliminates a hardware bottleneck when executing
 resource intensive tasks with no added development work.
 
-Many web applications adopt what is known as model-view-controller (MVC) decomposition
+Many web applications adopt what is known as a model-view-controller (MVC) decomposition
 as a strategy for application structure. This approach seperates the data objects from
 their representation. In the web environment this is a natural strategy as view information
 may deal with HTML and Cascading Style Sheets (CSS), which are entirely seperate from the data's area of concern.
-The MVC decomposition was a natural evolution in software stemming from design by
+The MVC pattern was a natural evolution in software stemming from design by
 seperation of responsibility and the development of graphical user interfaces \cite{krasner1988description}. Many different realizations
-of the concept exists under various names, and here we will use the term MVC decomposition to imply
+of the concept exists under various names, and here we will use the term MVC to imply
 a model-view seperation without specifying a strict controller role.
 
 The parts tracking database uses a MVC framework known as Backbone.js. Backbone provides
@@ -584,8 +584,8 @@ view will notify a Collection object which contains a related set of Model objec
 Backbone's Collection class is a flexible container for Model objects.
 In addition, the Backbone.Events API has been extended
 to singleton Collections in the PTDB, and this is how views communicate via messages
-with the models they represent. In this fashion the Collection objects play the role of
-the controller in MVC decomposition. In terms of design patterns, the Collection singletons 
+with the models they represent. In this fashion the parts tracking database uses certain Collection objects 
+as the controllers of the MVC pattern. In terms of design patterns, the Collection singletons 
 act as mediators between the views and models, or models and other models.
 This decouples models from other models or views and the
 application is easier to maintain and extend. 
