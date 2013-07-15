@@ -619,26 +619,29 @@ Updates to documents stored in CouchDB are handled through multi-version concurr
 circumvents the needs for file locks while writing to the database. Rather than locking a database record during
 a write operation, a new version of the file is is created and served by default. When a 
 record is requested, the latest version is sent to the user, although older versions may be requested as well.
-They are differentiated by a revision number, and a revision number is required when writing a document back 
+They are distinguished by a revision number, and a revision number is required when writing a document back 
 to the database. If the revision number of the document to be written doesn't match the revision of the current
 copy in the database,
 a document update confict occurs and it is left to the application to resolve the conflict (in the PTDB the user must
-re-open the record in question and get the new version in the event of a conlict). If the numbers match,
+re-open the record in question and get the new version). If the numbers match,
 the document is saved with a newly generated revision number.
 This allows database interactions to scale to large numbers of concurrent readers and writers.
 
 \subsubsection{Exposure Calculator}
 In addition to the PTDB web application for data entry, we have created a Python program for
 examining records in the database and calculating activation rates based on storage and 
-transportation times and locations. The exposure calculator can crawl the database or can
-also be run in server mode, using the Twisted library, and accepts HTTP requests for
+transportation times and locations. The exposure calculator crawls the database (examining records
+sequentially and non-interactively) and updates
+calculated values.
+The calculator can
+also be run interactively in server mode, using the Twisted library, and it accepts HTTP requests for
 exposure data. The locations record in the database contains addresses which
 are converted to latitude, longtitude, and elevation data using the Google Maps API. Elevation and time data can
 then be used to calculate expected activation rates for a given transportation route
 or storage event.
 
 Twisted is an event-driven network layer which can use many networking protocols. We've 
-choosen to use its HTTP functionality and return exposure data as JSON strings. By
+chosen to use its HTTP functionality and return exposure data as JSON strings. By
 using Twisted, our application gets multi-threaded concurrency, allowing
 the exposure calculator to take advantage of a multi-core processor when running in 
 server mode. Using the framework simply involves writing callback functions for the appropriate request
@@ -650,20 +653,21 @@ if something has gone wrong during calculation. When not operating in server mod
 exposure calculator crawls the history records of the database and calculates exposure for
 new history entries or if a particular entry's timestamp is out of date. 
 
-Exposure data are also added to part records, but again the calculation is based on history
+Exposure data are also added to a part's database record, but again the calculation is based on history
 entry data. If a new history entry is added (or the timestamp is out of date) the part
 exposure will be updated on the next crawl. The Google Maps API returns multiple possible
-routes between two locations and the correct route must be choosen or created
+routes between two locations and the correct route must be chosen or created
 manually for an accurate estimate of exposure to cosmic radiation.
 
 \section{Web Application Structure}
-The building blocks of the PTDB web application are the Backbone.Model subclasses. DBRecord models represent parts
+The building blocks of the PTDB web application are the Backbone.Model subclasses which represent parts, 
+assemblies, and history entries. DBRecord models represent parts
 and assemblies and their attributes point to FormCollection instances. HistoryRecords provide an interface for manipulating 
 the storage, machining, transportation, or process records which may be linked to parts or assemblies. The Form model
 acts as the parent to a tree of subclasses which are the data-containers for the user interface presented by the PTDB.
 
-Backbone.Collection objects contain multiple models and some, the AbstractMediatorCollection objects, support event notification
-which controls inter-model linking. FormCollection objects aggregate Form models and provide an API for generating JSON to be
+Backbone.Collection objects aggregate multiple models and some, the AbstractMediatorCollection objects, support event notification
+which controls inter-model linking. FormCollection objects hold Form models and provide an API for generating JSON to be
 saved to the database.
 
 View objects which inherit from Backbone.View update the page content to present information to the user. They contain logic dealing with
@@ -697,7 +701,8 @@ about the object -- its current value, the label and tooltip text,
 and a boolean value representing whether or not the model data was validated succesfully.
 
 More complex forms include dropdown boxes which contain options pulled from CouchDB. The model
-stores a reference to the correct type of options for the dropdown list. In addition, if the 
+stores a reference to the correct type of options for the dropdown list (for instance, whether it is a locations, people,
+or process type dropdown). In addition, if the 
 desired option is not present the form can be switched into a textbox. The value entered by
 the user is sanitized (non-alphanumerics are removed) and a key is generated based on the sanitized value. The new key-value
 pair is then written to the database and is present for future use.
@@ -721,7 +726,7 @@ As mentioned previously, queries to CouchDB are handled through views which are 
 MapReduce functions which operate on the data. The PTDB presents a few different search types to users including
 part serial number, name, comments, linked history records, material type, or machining operations.
 Partial key matching is supported for the drawing number search.
-Data returned from a CouchDB view are used to instantiate a SearchResults collection which implements various
+Data returned from a CouchDB view are used to instantiate a SearchResults collection which implements a variety of
 sorting features. 
 
 Besides directly manipulating a single record, a user may also open multiple records at once for 
@@ -751,10 +756,12 @@ A factory method on the collection examines the JSON
 fetched from CouchDB and creates an instance of the correct type, adding the new model
 to the collection. 
 
-As mentioned before, DBRecord and HistoryRecord objects have attributes which point to FormCollection instances.
+As mentioned before, DBRecord and HistoryRecord objects have attributes which point to FormCollection instances (subclasses
+of Backbone.Collection).
 FormCollections contain a set of Form models as well as some basic logic. Instances can return an array of form ids
 and specify an API for returning JSON from Form models contained in the collection. Subclasses 
-group sets of related forms together and implement extra logic related to the set of forms. For instance, AssemblyForms
+group sets of related forms together and implement extra logic related to the set of forms. For instance, AssemblyForms (another Backbone.Collection
+subclass)
 has a method for returning the serial numbers of components in the assembly, as it contains a Form model which holds
 that information. PartForms has a method for getting or setting the part's material type -- grabbing the value from the
 desired Form model.
@@ -762,7 +769,7 @@ desired Form model.
 \subsection{Views}
 The views have access to the Backbone.Events API and listen for changes in model attributes. If a change is detected,
 the view is rerendered. Interaction with elements in the user interface trigger events which are caught by the view and the appropriate
-functions are run. To modify DBRecord and/or HistoryRecord models (other than direct data entry) views pass messages to 
+functions are run. To modify DBRecord and/or HistoryRecord models views pass messages to 
 RecordCollection or HistoryCollection which prescribed linking interactions between models.
 
 The CollectionView class holds views for models stored in AbstractMediatorCollections. HistoryFormViews
@@ -785,7 +792,8 @@ Data validation is handled by a singleton class (Validator) and the Backbone.Mod
 method of model objects delegates to the appropriate Validator method.
 A regular expression test is done and the result returned. The Validator singleton
 allows for all regular expressions needed for validation to be present in a single object, reducing scattered
-regular expression patterns in the application. Invalid data triggers view notifcation and can, for instance, turn backgrounds 
+regular expression patterns in the application. Examples of validated fields include serial numbers, drawing numbers, and \textsc{Majorana} procedure numbers.
+Invalid data triggers view notifcation and can, for instance, turn backgrounds 
 red to notify the user that something has gone wrong. Invalid data can prevent record saving, or relative/history linking.
 
 Database interactions are abstracted with the DBController singleton. It allows for error-handling during saving or 
@@ -794,7 +802,8 @@ entry serial numbers, as well as for cloning and adding to DB-active lists.
 
 DBListController is a singleton which caches options lists stored in CouchDB, such as people, locations, or process types. Its
 API allows for retrieving list options, forcing a cache reset, and checking to see if the cache is valid. The cache timeout is 
-one minute by default. Caching the list options improves interaction speeds when many parts must be opened for manipulation. For
+one minute by default, longer than the execution time for most tasks, but short enough to keep the application current
+with changes from a user in another location. Caching the list options improves interaction speeds when many parts must be opened for manipulation. For
 instance, adding a history entry to a String assembly may involve changes in over one hundred parts and each part contains many
 DB-active lists to be fetched, and may contain history entries with more.
 
