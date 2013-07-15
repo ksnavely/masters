@@ -513,8 +513,6 @@ challenge faced by many organizations. Providing a web interface for data entry 
 a non-expert user to interact with data stored in \textsc{Majorana}'s CouchDB. Any web browser becomes a tool which can
 be used to query information about part location or history.
 
-\subsection{Database Record Structure}
-
 \subsection{Parts Tracking Software Overview}
 A JavaScript based web application frontend has been developed by \textsc{Majorana} as an easy-to-use tool for data-entry (see Fig. \ref{interface}).
 Adopting modern programming techniques, using CouchDB, and leveraging libraries like JQuery and Backbone.js (see appendix for a complete list) allows the
@@ -530,6 +528,53 @@ These DateFormView instances are disabled for input. The part has a ``Not Engrav
 as it is too large to engrave. The CommentFormView expands when a user clicks on the text area.}
 \label{interface}
 \end{figure}
+
+\subsubsection{CouchDB}
+CouchDB has an interface based on the HyperText Transfer Protocol (HTTP) Representational State Transfer (REST) model,
+This allows applications which run in the browser to mesh naturally with CouchDB.
+The REST model prescribes a client-server
+relationship in which state (database records for instance) is requested through an interface.
+HTTP is the interface of the web and interactions with CouchDB are handled with HTTP
+requests such as GET, PUT, POST, and DELETE. 
+
+Unlike Structured Query Language (SQL) databases, CouchDB stores information in JavaScript Object Notation (JSON) \cite{json}
+documents.
+JSON provides a human-readable
+standard for data representation which is a subset of JavaScript syntax. Data are represented as object
+literals which map key strings to values, which may be strings, numbers, arrays, or other object literals. 
+JSON parses naturally into JavaScript objects and other languages, such as Python, have easy-to-use
+JSON parsing libraries. 
+
+Each part, assembly, and history entry is represented by a JSON document in CouchDB. A relationship
+is represented by storing the serial numbers of linked parts in the appropriate field. For example, in a parent-child relationship the parent record stores the serial numbers
+of its children in an array. The children all store the serial number of their parent. History entries also have ids and linking
+parts or assemblies to a history entry involves appending the history id to an array of history entry ids in each part or assembly. Likewise,
+the history record stores the serial number of linked parts and assemblies. Assembly membership works the same way, with assemblies
+storing component serial numbers and the components holding the id of the assembly they belong to.
+
+Besides directly requesting a specific document, CouchDB takes advantage of the MapReduce paradigm for data
+queries. MapReduce is an approach which optimizes a given query for parallel/cluster computing \cite{mapreduce_dean}. First a map function
+is defined which is applied to all of the data in the database. It filters and sorts documents and returns key-value
+pairs. For instance, a user may wish to return all database documents of some type, with a specific attribute used as
+a key to access the filtered documents. 
+
+The reduce step takes the output of the map function (sorted key-value pairs) and summarizes the result. Rather than returning a dictionary
+of key-value pairs, it returns a single value. The reduce
+step is optional and not all queries require one. MapReduce is implemented in CouchDB with view documents. Each view has
+a map and reduce JavaScript function, and only the map function is required. View results are updated incrementally as
+documents change or are added to the database and results are cached, reducing view result build time \cite{couchdb_guide}.
+
+Updates to documents stored in CouchDB are handled through multi-version concurrency control (MVCC). Using MVCC
+circumvents the needs for file locks while writing to the database. Rather than locking a database record during
+a write operation, a new version of the file is is created and served by default. When a 
+record is requested, the latest version is sent to the user, although older versions may be requested as well.
+They are distinguished by a revision number, and a revision number is required when writing a document back 
+to the database. If the revision number of the document to be written doesn't match the revision of the current
+copy in the database,
+a document update confict occurs and it is left to the application to resolve the conflict (in the PTDB the user must
+re-open the record in question and get the new version). If the numbers match,
+the document is saved with a newly generated revision number.
+This allows database interactions to scale to large numbers of concurrent readers and writers.
 
 \subsubsection{JavaScript and Web Applications}
 As both client computers and data-serving cloud power grow, the web browser has become a
@@ -586,46 +631,6 @@ The models representing parts, assemblies, and history entries are persisted in
 a CouchDB database. When a model object of these types is created, it retrieves database information
 about the entity it represents and instantiates its internal fields. Data is sent back to the
 database when a mutli-model interaction takes place or when a document is saved from the user interface.
-
-\subsubsection{CouchDB}
-CouchDB has an interface based on the HyperText Transfer Protocol (HTTP) Representational State Transfer (REST) model,
-This allows applications which run in the browser to mesh naturally with CouchDB.
-The REST model prescribes a client-server
-relationship in which state (database records for instance) is requested through an interface.
-HTTP is the interface of the web and interactions with CouchDB are handled with HTTP
-requests such as GET, PUT, POST, and DELETE. 
-
-Unlike Structured Query Language (SQL) databases, CouchDB stores information in JavaScript Object Notation (JSON) \cite{json}
-documents.
-JSON provides a human-readable
-standard for data representation which is a subset of JavaScript syntax. Data are represented as object
-literals which map key strings to values, which may be strings, numbers, arrays, or other object literals. 
-JSON parses naturally into JavaScript objects and other languages, such as Python, have easy-to-use
-JSON parsing libraries. 
-
-Besides directly requesting a specific document, CouchDB takes advantage of the MapReduce paradigm for data
-queries. MapReduce is an approach which optimizes a given query for parallel/cluster computing \cite{mapreduce_dean}. First a map function
-is defined which is applied to all of the data in the database. It filters and sorts documents and returns key-value
-pairs. For instance, a user may wish to return all database documents of some type, with a specific attribute used as
-a key to access the filtered documents. 
-
-The reduce step takes the output of the map function (sorted key-value pairs) and summarizes the result. Rather than returning a dictionary
-of key-value pairs, it returns a single value. The reduce
-step is optional and not all queries require one. MapReduce is implemented in CouchDB with view documents. Each view has
-a map and reduce JavaScript function, and only the map function is required. View results are updated incrementally as
-documents change or are added to the database and results are cached, reducing view result build time \cite{couchdb_guide}.
-
-Updates to documents stored in CouchDB are handled through multi-version concurrency control (MVCC). Using MVCC
-circumvents the needs for file locks while writing to the database. Rather than locking a database record during
-a write operation, a new version of the file is is created and served by default. When a 
-record is requested, the latest version is sent to the user, although older versions may be requested as well.
-They are distinguished by a revision number, and a revision number is required when writing a document back 
-to the database. If the revision number of the document to be written doesn't match the revision of the current
-copy in the database,
-a document update confict occurs and it is left to the application to resolve the conflict (in the PTDB the user must
-re-open the record in question and get the new version). If the numbers match,
-the document is saved with a newly generated revision number.
-This allows database interactions to scale to large numbers of concurrent readers and writers.
 
 \subsubsection{Exposure Calculator}
 In addition to the PTDB web application for data entry, we have created a Python program for
