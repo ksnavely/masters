@@ -665,6 +665,14 @@ routes between two locations and the correct route must be chosen or created
 manually for an accurate estimate of exposure to cosmic radiation.
 
 \section{Web Application Structure}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=3.5in]{simple_structure}
+\caption{}
+\label{simple_structure}
+\end{figure}
+
 The building blocks of the PTDB web application are the Backbone.Model subclasses which represent parts, 
 assemblies, and history entries. DBRecord models represent parts
 and assemblies and their attributes point to FormCollection instances. HistoryRecords provide an interface for manipulating 
@@ -681,7 +689,7 @@ view functions to be executed, updating data stored in a model, passing messages
 
 Other objects act like controllers in a Model-View-Controller decomposition, such as DBController, DBListController, Validator,
 and MJDBRouter. These are used to abstract interactions with CouchDB and add functionality such as data caching and validation. 
-The Backbone.Router subclass MJDBRouter provides a mapping from URI navigation to function execution.
+The Backbone.Router subclass MJDBRouter provides a mapping from URI navigation to function execution. See Fig. \ref{simple_structure}
 
 
 \subsection{Models}
