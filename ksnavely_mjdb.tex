@@ -563,38 +563,29 @@ The Backbone Model
 object has a set of attributes (defined by the developer) which are accessed through
 built in get and set functions.
 When an attribute is changed, the model triggers a change event, which is picked
-up by any View objects listening to that model.
+up by any view objects listening to that model.
 
-The Backbone View detects the model's change and refreshes the user interface.
-View objects contain the logic and functions for interactions with the page content.
+The Backbone View contains the logic and functions for interactions with the page content
+and listens for model change or user input.
+For instance, a model change event can cause a view to update a textbox's contents.
+When user input is detected (such as text entry or button clicks) the view acts 
+on the detected events to update model data.
 Though a view has a reference to the model object it represents,
-the link may only be used for querying model state. Not allowing the view to directly manipulate
-the model is an important aspect of MVC decomposition. Instead, to change a model's state the
-view will notify a Collection object which contains a related set of Model objects.
+the link may only be used for querying model state or direct data entry (for instance,
+changing a selected value). Not allowing the view to directly manipulate
+the model is an important aspect of MVC decomposition. Instead, the
+view will notify a mediator object which will in turn carry out the prescribed actions.
 
-Backbone's Collection class is a flexible container for Model objects.
-In addition, the Backbone.Events API has been extended
-to singleton Collections in the PTDB, and this is how views communicate via messages
-with the models they represent. In this fashion the parts tracking database uses certain Collection objects 
-as the controllers of the MVC pattern. In terms of design patterns, the Collection singletons 
-act as mediators between the views and models, or models and other models.
-This decouples models from other models or views and the
+Backbone's Collection class is a flexible container for Backbone Model objects and in the PTDB
+singleton Collections are used as mediators for interactions with models.
+Multi-model interactions such as linking relatives or history entries are controlled by messages
+passed to mediators.
+This decouples models from views or other models and the
 application is easier to maintain and extend. 
-
-Besides Backbone.js, the PTDB also takes advantage of JQuery and Underscore.js.
-JQuery is a popular JavaScript library which simplifies interactions with the page content and also provides
-an Asynchronous JavaScript And eXtended Markup Language (AJAX) API. Extensions to JQuery which deal specifically with CouchDB are also used.
-JQuery provides a lightweight but powerful API for document manipulation, in contrast to
-using pure JavaScript methods alone. Underscore.js is another lightweight toolkit which provides
-convienient methods for loop constructs and common functional programming tasks.
-Backbone.js requires Underscore.js and many of the Underscore.js methods have been extended onto the 
-Backbone.js MVC objects.
-
-For a refined user experience, Twitter's Bootstrap styling package is used. Bootstrap 
-provides HTML, CSS, and JavaScript (not used in the PTDB) for building a clean
-user interface with forms, buttons, and navigation components. Using a popular UI 
-library allows application development to focus on functionality rather than style (and
-cross-browser styling) issues.
+The models representing parts, assemblies, and history entries are persisted in 
+a CouchDB database. When a model object of these types is created, it retrieves database information
+about the entity it represents and instantiates its internal fields. Data is sent back to the
+database when a mutli-model interaction takes place or when a document is saved from the user interface.
 
 \subsubsection{CouchDB}
 CouchDB has an interface based on the HyperText Transfer Protocol (HTTP) Representational State Transfer (REST) model,
