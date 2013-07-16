@@ -514,7 +514,7 @@ a non-expert user to interact with data stored in \textsc{Majorana}'s CouchDB. A
 be used to query information about part location or history.
 
 \subsection{Parts Tracking Software Overview}
-A JavaScript based web application frontend has been developed by \textsc{Majorana} as an easy-to-use tool for data-entry (see Fig. \ref{interface}).
+A JavaScript based web application frontend has been developed by \textsc{Majorana} as an easy-to-use tool for data-entry (see Fig. \ref{example_part}).
 Adopting modern programming techniques, using CouchDB, and leveraging libraries like JQuery and Backbone.js (see appendix for a complete list) allows the
 web application to be easily extendable and maintainable throughout the project lifetime. Calculation of
 activation rates is done with a small Python application which walks through data entered into the web
@@ -522,11 +522,11 @@ frontend and calculation results are pushed to the CouchDB database.
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=3.5in]{interface}
+\includegraphics[width=3.5in]{example_part}
 \caption{A screenshot of the required forms of a part or assembly as presented to the user.
 These DateFormView instances are disabled for input. The part has a ``Not Engravable" flag,
 as it is too large to engrave. The CommentFormView expands when a user clicks on the text area.}
-\label{interface}
+\label{example_part}
 \end{figure}
 
 \subsubsection{CouchDB}
