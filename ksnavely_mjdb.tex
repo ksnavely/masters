@@ -459,12 +459,23 @@ present in smaller amounts. Majorana electroforms the worlds purest copper in it
 This ultra-pure copper is visually indistinguishable from commercial copper and so material
 tracking is vital.
 
-
 \textsc{Majorana} manufactures its own detector components deep underground in its clean machine shop, and tracking the 
 flow of stock material to finished parts is an important responsibility of the PTDB.
 Thus, the stock and part relationship is also tracked
-within the PTDB.  When a stock-part relationship is established (known generally as parent-child),
+within the PTDB (see Figure \ref{example_part}).  When a stock-part relationship is established (known generally as parent-child),
 the child inherits the parent record's material type. 
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=3.5in]{example_part}
+\caption{The life a part from commercial copper stock to finished assembly is illustrated above. Each smaller stock piece or part created from a
+parent stock piece receives a new serial number for tracking.
+Storage, transportation, and processes such as machining, cleaning, or acid etching are tracked for each part and
+referenced when parts are selected for use. When an assembly is created from completed parts 
+the components are linked to a new assembly record in the database.}
+\label{example_part}
+\end{figure}
+
 
 The parent-child relationship is strictly one to many. No part can have more than one parent, as the parent-child link
 represents a reducing process, such as machining parts or cutting cables. An object which is made from more than one individual
@@ -514,22 +525,11 @@ a non-expert user to interact with data stored in \textsc{Majorana}'s CouchDB. A
 be used to query information about part location or history.
 
 \subsection{Parts Tracking Software Overview}
-A JavaScript based web application frontend has been developed by \textsc{Majorana} as an easy-to-use tool for data-entry. \ref{example_part}).
+A JavaScript based web application frontend has been developed by \textsc{Majorana} as an easy-to-use tool for data-entry.
 Adopting modern programming techniques, using CouchDB, and leveraging libraries like JQuery and Backbone.js (see appendix for a complete list) allows the
 web application to be easily extendable and maintainable throughout the project lifetime. Calculation of
 activation rates is done with a small Python application which walks through data entered into the web
 frontend and calculation results are pushed to the CouchDB database.
-
-\begin{figure}[!t]
-\centering
-\includegraphics[width=3.5in]{example_part}
-\caption{The life a part from commercial copper stock to finished assembly is illustrated above. Each smaller stock piece or part created from a
-parent stock piece receives a new serial number for tracking in the database. The storage and transportation of parts and stock is tracked for the
-purposes of logistics and cosmic ray exposure estimation. Processes such as machining, cleaning, or acid etching are tracked for each part and
-referenced when parts are selected for assembly. When
-a completed part is used in the construction of an experiment component an assembly record is created and the components linked to the assembly.}
-\label{example_part}
-\end{figure}
 
 \subsubsection{CouchDB}
 CouchDB has an interface based on the HyperText Transfer Protocol (HTTP) Representational State Transfer (REST) model,
