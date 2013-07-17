@@ -489,24 +489,26 @@ important if, as in step (f) of Figure \ref{example_part}, parts must be taken a
 
 Machining a part irreversibly changes its structure. Many subtle details may differentiate
 two otherwise very similar looking parts. Tracking the machining date, machinist, and \textsc{Majorana} drawing number allows
-for ambiguities to be resolved when a component's history is called into question. The manufacture of Hollow Hex Rods, step (e) of Figure \ref{example_part},
-is one example -- The length of the Hollow Hex Rods is fine tuned for each type of Detector Unit used in \textsc{Majorana}.
+for ambiguities to be resolved when a component's history is called into question. The manufacture of Hollow Hex Rods (custom copper bolts), step (e) of Figure \ref{example_part},
+is one example -- the length of the Hollow Hex Rods is fine tuned for each type of Detector Unit used in \textsc{Majorana}.
 
 Components used by \textsc{Majorana} go through many processes. Cleaning, for instance, is a complicated task for an ultra-low
 background experiment. There are many different cleaning processes a part may undergo and a part's cleaning history
 must be understood before integration into detector hardware. For example, history entries stored alongside part records in the PTDB
 allow scientists to verify whether a part has been acid etched, ultrasonic cleaned, or wiped with ethanol/isopropanol.
-There are many other process types and not every type can
-be accounted for during application development. As such, any user can 
+There are many other process types and not every type can be accounted for during application development. As such, any user can 
 easily add process types directly from the User Interface (UI). Some processes require an official \textsc{Majorana} procedure to be
-followed and entry of the \textsc{Majorana} procedure number is required.
+followed and entry of the procedure number is required.
 
 An object which is made from more than one individual
 part is known as an assembly. The PTDB represents such relationships and provides each assembly with its own serial number. A part can be a member of only one assembly,
-and an assembly may be a component of another assembly.
+and one assembly may be a component of another assembly.
+If a history entry is applied to an assembly, it is also applied to each component or sub\-assembly in the assembly tree. If a Cryostat receives
+a history entry, each Detector String, Detector Unit, and Hollow Hex Rod currently in the tree will receive the same entry.
+
 The assembly types in \textsc{Majorana} are drawn directly from the project engineering CAD designs and represent logical 
 groupings of parts, such as Detector Units, Detector Strings, or Cryostats. 
-Some assemblies contain multiple identical parts such as the three Hollow Hex Rods (custom copper bolts) in a Detector Unit.
+Some assemblies contain multiple identical parts such as the three Hollow Hex Rods in a Detector Unit.
 Each Hollow Hex Rod is assigned a role number which correlates directly to the simulation geometry designed by \textsc{Majorana}. 
 
 By assigning each part an indivdual position number, abberant backgrounds can be examined through positional analysis in 
@@ -514,16 +516,12 @@ simulation and the radioactive part identified without immediate deconstruction 
 terms of manpower and time. During the assembly of detector components detailed notes are kept in physical logbooks that are
 transcribed into an electronic logbook, and finally the assembly information is entered into the PTDB.
 
-Given a serial number, one can examine a part in the PTDB and walk up the assembly tree. For example, the Hollow Hex Rod is a member
-of a Detector Unit, which is a member of a Detector String, which is in turn a component of a Cryostat assembly.
-If a history entry is applied to an assembly, it is also applied to each component or sub\-assembly in the assembly tree. If a Cryostat receives
-a history entry, each Detector String, Detector Unit, and Hollow Hex Rod currently in the tree will receive the same entry.
-
-In addition to physics information provided by tracking material exposure to cosmic radiation, parts tracking also provides
-a great logistics benefit to \textsc{Majorana}. Organizing and tracking information about thousands of components is a
+Organizing and tracking information about thousands of components is a
 challenge faced by many organizations. Providing a web interface for data entry and retrieval allows
 a non-expert user to interact with data stored in \textsc{Majorana}'s CouchDB. Any web browser becomes a tool which can
-be used to query information about part location or history.
+be used to query information about a part's location or history. This greatly increases the efficiency of quality assurance
+checks compared to traditional electronic log books, and the structured data can be later analyzed to calculate information
+such as cosmogenic activation.
 
 \subsection{Parts Tracking Software Overview}
 A JavaScript based web application has been developed by \textsc{Majorana} as an easy-to-use tool for data-entry.
@@ -548,12 +546,19 @@ literals which map key strings to values, which may be strings, numbers, arrays,
 JSON parses naturally into JavaScript objects and other languages, such as Python, have easy-to-use
 JSON parsing libraries. 
 
-Each part, assembly, and history entry is represented by a JSON document in CouchDB. A relationship
-is represented by storing the serial numbers of linked parts in the appropriate field. For example, in a parent-child relationship the parent record stores the serial numbers
-of its children in an array. The children all store the serial number of their parent. History entries also have ids and linking
-parts or assemblies to a history entry involves appending the history id to an array of history entry ids in each part or assembly. Likewise,
-the history record stores the serial number of linked parts and assemblies. Assembly membership works the same way, with assemblies
-storing component serial numbers and the components holding the id of the assembly they belong to.
+Each part, assembly, and history entry is represented by a JSON document in CouchDB. A relationship between these objects
+is established by storing the serial numbers of linked parts in the appropriate field. For example, in a parent-child relationship the parent record stores the serial numbers
+of its children in an array. The children all store the serial number of their parent. Both parts and assemblies have a set of 
+required information, such as a name, record creation and last update date, and a comments field. Parts and assemblies also hold an array for
+their linked history entry ids. 
+Parts have additional fields for relatives (assembly, parent, and children) as well as material type. Assemblies have information
+on the assembly type and an array for components. Each component in the array detailes its serial number and role number. Membership history is also tracked
+on assembly records with the serial number, whether the operation was to add or remove a component, as well as the date.
+
+The structure of history entry records varies based on the type of history entry. All history records have a field for the history type,
+as well as an array of linked part and assembly serial numbers. Each has a location and date field, and the transportation entries
+hold a location and date for both the shipment and reception of the linked records. Machining records have an additional field for the
+\textsc{Majorana} drawing number used during manufacturing. Similarly, process records include a field for the procedure followed.
 
 Besides directly requesting a specific document, CouchDB takes advantage of the MapReduce paradigm for data
 queries. MapReduce is an approach which optimizes a given query for parallel/cluster computing \cite{mapreduce_dean}. First a map function
