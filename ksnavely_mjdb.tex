@@ -371,13 +371,14 @@
 \begin{abstract}
 The \textsc{Majorana} \textsc{Demonstrator} is an ultra-low background physics
 experiment searching for the neutrinoless double-beta decay of \ge76.
-Detecting neutrinoless double-beta decay requries extreme radiopurity of components
-used in the experiment's construction.
-The \textsc{Majorana} parts tracking database is an application which tracks
-cosmogenic activation in materials and parts used to build the \textsc{Demonstrator}.
-Tracking the location of parts as they are produced and shipped provides an estimate
-of their exposure to cosmic radiation and 
-an important quality assurance check during construction. A web application for data entry
+The \textsc{Majorana} parts tracking database is used to record
+the history of components used in the construction of the \textsc{Demonstrator}.
+Transportation, storage, and processes undergone by parts such as machining or cleaning 
+are linked to part records. Tracking parts provides a great logistics
+benefit and an important quality assurance reference during construction.
+In addition, the location history of parts provides an estimate
+of their exposure to cosmic radiation. 
+A web application for data entry
 and a radiation exposure calculator have been developed as tools for
 achieving the extreme radiopurity required for this rare decay search.
 \end{abstract}
@@ -409,31 +410,32 @@ matter candidate particles known as Weakly Interacting Massive Particles (WIMPs)
 
 Achieving this low background goal requires a multifaceted strategy including detector shielding, assembly in an ultra-clean environment,
 careful materials screening, and a comprehensive parts tracking effort.
+Recording part history is essential to realizing the \textsc{Demonstrator}'s background goal and controlling logistics.
+\textsc{Majorana} has developed a CouchDB  \cite{couchdb_guide} based parts tracking database (PTDB)
+for tracking parts used in the construction of the experiment. 
+Referencing part history provides an important quality assurance check during 
+construction. A part's history (cleaning, leaching, etc...) must be 
+understood before it can be integrated into production hardware. The information tracked
+to benefit \textsc{Majorana}'s physics goals also greatly benefits conventional logistics in an
+experiment which has thousands of individual components.
+
+
 To minimize backgrounds from cosmic radiation the \textsc{Demonstrator} is located deep underground
 at the 4850' level of the Sanford Underground Research Facility (SURF).
 However, many parts need to be transported or stored above ground and are subject to
 cosmogenic activation -- unstable isotopes in detector components created by cosmic radiation which may later decay and become background
 to physics measurements.
-
-Parts tracking is essential to realizing the \textsc{Demonstrator}'s background goal and controlling logistics.
 Determining the activation rate of cosmogenic isotopes allows for an estimate of background
-radiation originating from detector components. \textsc{Majorana} has developed a CouchDB  \cite{couchdb_guide} based 
-parts tracking database (PTDB)
-for tracking parts used in the construction of the experiment. The PTDB has a web-application frontend
+radiation originating from detector components.
+
+The PTDB has a web-application frontend
 for data entry and a Python based exposure calculator. The exposure calculator converts storage and transportation history 
-into time and elevation profiles which can be used to estimate
-material activity which can be folding into monte-carlo background simulations.
-
-Tracking components also plays an important role in quality assurance during 
-construction. A part's history (cleaning, transportation, etc...) must be 
-understood before it can be integrated into production hardware. The information tracked
-to benefit \textsc{Majorana}'s physics goals also greatly benefits conventional logistics in an
-experiment which has thousands of individual components.
-
+into time and elevation profiles used to estimate
+material activity, which can be folded into monte-carlo background simulations.
 This paper begins by reviewing logistics for an ultra-low background
 physics experiment, technologies used to create the web application, and
 how our data is stored and queried. The final sections of the paper detail
-the structure of the web application and exposure calculator as well as reflect
+the structure of the web application and exposure calculator, as well as reflect
 on the benefits of tracking part history for the \textsc{Demonstrator}.
 
 \section{Parts Tracking}
@@ -455,7 +457,7 @@ and a range of serial numbers is listed on the bag.
 
 There are many materials used in the \textsc{Demonstrator}, but the bulk of the mass of the \textsc{Demonstrator}'s components is copper.
 Steel, teflon, and other plastics are 
-present in smaller amounts. Majorana electroforms the worlds purest copper in its undeground electroforming facility, also at SURF \cite{mj_wilkerson}.
+present in smaller amounts. \textsc{Majorana} electroforms the worlds purest copper in its undeground electroforming facility, also at SURF \cite{mj_wilkerson}.
 This ultra-pure copper is visually indistinguishable from commercial copper and so material
 tracking is vital.
 
@@ -501,7 +503,7 @@ The are many types of history entries, including storage and transporation (whic
 and others. A history entry references one or more locations which are stored in a document in the database. Each location has address meta-data
 associated with it, and \textsc{Majorana}'s exposure calculation software uses the 
 Google Maps Application Programming Interface (API) \cite{google_maps_dev_guide} to convert these addresses into latitudes, longtitudes, and elevations,
-as well as provide sampled travel route information. The elevation versus time
+as well as provide time-sampled travel route information. The elevation versus time
 profile is used to calculate an estimate of activation rates for cosmogenic isotopes in tracked components.
 
 The machining process irreversibly changes a part's structure. Many subtle details may differentiate
@@ -525,14 +527,14 @@ a non-expert user to interact with data stored in \textsc{Majorana}'s CouchDB. A
 be used to query information about part location or history.
 
 \subsection{Parts Tracking Software Overview}
-A JavaScript based web application frontend has been developed by \textsc{Majorana} as an easy-to-use tool for data-entry.
+A JavaScript based web application has been developed by \textsc{Majorana} as an easy-to-use tool for data-entry.
 Adopting modern programming techniques, using CouchDB, and leveraging libraries like JQuery and Backbone.js (see appendix for a complete list) allows the
 web application to be easily extendable and maintainable throughout the project lifetime. Calculation of
 activation rates is done with a small Python application which walks through data entered into the web
 frontend and calculation results are pushed to the CouchDB database.
 
 \subsubsection{CouchDB}
-CouchDB has an interface based on the HyperText Transfer Protocol (HTTP) Representational State Transfer (REST) model,
+CouchDB has an interface based on the HyperText Transfer Protocol (HTTP) Representational State Transfer (REST) model.
 This allows applications which run in the browser to mesh naturally with CouchDB.
 The REST model prescribes a client-server
 relationship in which state (database records for instance) is requested through an interface.
@@ -609,7 +611,13 @@ objects with APIs designed for use together.
 The Backbone Model 
 object has a set of attributes (defined by the developer) which are accessed through
 built in get and set functions.
-When an attribute is changed, the model triggers a change event, which is picked
+The model data representing parts, assemblies, and history entries are persisted in 
+the CouchDB database. 
+When a model object of these types is created, database JSON data is used to instantiate the model's
+internal fields.
+Data is sent back to the
+database when a mutli-model interaction takes place or when a document is saved from the user interface.
+When an model attribute is changed, the model triggers a change event, which is picked
 up by any view objects listening to that model.
 
 The Backbone View contains the logic and functions for interactions with the page content
@@ -619,20 +627,13 @@ When user input is detected (such as text entry or button clicks) the view acts
 on the detected events to update model data.
 Though a view has a reference to the model object it represents,
 the link may only be used for querying model state or direct data entry (for instance,
-changing a selected value). Not allowing the view to directly manipulate
-the model is an important aspect of MVC decomposition. Instead, the
-view will notify a mediator object which will in turn carry out the prescribed actions.
+changing a selected value).
 
-Backbone's Collection class is a flexible container for Backbone Model objects and in the PTDB
-singleton Collections are used as mediators for interactions with models.
-Multi-model interactions such as linking relatives or history entries are controlled by messages
-passed to mediators.
-This decouples models from views or other models and the
+More complicated multi-model interactions, such as linking relatives or history entries, are controlled by
+mediators which are singleton Backbone Collection subclasses. The Collection object provides a
+flexible container for Backbone Models and using them as mediators
+decouples models from views or other models and the
 application is easier to maintain and extend. 
-The models representing parts, assemblies, and history entries are persisted in 
-a CouchDB database. When a model object of these types is created, it retrieves database information
-about the entity it represents and instantiates its internal fields. Data is sent back to the
-database when a mutli-model interaction takes place or when a document is saved from the user interface.
 
 \subsubsection{Exposure Calculator}
 In addition to the PTDB web application for data entry, we have created a Python program for
@@ -671,7 +672,13 @@ manually for an accurate estimate of exposure to cosmic radiation.
 \begin{figure}[!t]
 \centering
 \includegraphics[width=3.5in]{simple_structure}
-\caption{}
+\caption{The above illustration demonstrates key relationships between elements of the PTDB web application
+and CouchDB. JSON documents representing parts, assemblies, and history entries are stored in the database.
+A DBController instance provides an abstraction layer between CouchDB and other controllers in the application.
+PartRecord, AssemblyRecord, and HistoryRecord models are stored in mediating collections (RecordCollection and HistoryCollection
+singletons) which carry out multi-model interactions. Views monitor individual models as well as RecordCollection and HistoryCollection.
+The refresh themselves if their models trigger change events and create new views when add events are triggered
+on the collections. They also listen for user-input and update models or message mediators as needed.}
 \label{simple_structure}
 \end{figure}
 
@@ -692,7 +699,6 @@ view functions to be executed, updating data stored in a model, passing messages
 Other objects act like controllers in a Model-View-Controller decomposition, such as DBController, DBListController, Validator,
 and MJDBRouter. These are used to abstract interactions with CouchDB and add functionality such as data caching and validation. 
 The Backbone.Router subclass MJDBRouter provides a mapping from URI navigation to function execution. See Fig. \ref{simple_structure}
-
 
 \subsection{Models}
 The real-life items of interest in the parts tracking database are the parts and assemblies which compose
@@ -725,7 +731,7 @@ pair is then written to the database and is present for future use.
 This database-active dropdown object is exploited for lists of locations (with address meta-data
 stored in the database record), processes, or collaboration members. No administrative intervention
 is required for the addition of information to these lists. To improve performance and reduce
-AJAX requests the options lists are cached in an object which specifies a few-second timeout.
+AJAX requests the options lists are cached in an object which specifies a short-term timeout.
 If many records are opened at once and they contain multiple DB-active dropdown lists, they 
 pull data from the cached list object rather than sending out AJAX requests and waiting for 
 a response.
@@ -744,8 +750,8 @@ Partial key matching is supported for the drawing number search.
 Data returned from a CouchDB view are used to instantiate a SearchResults collection which implements a variety of
 sorting features. 
 
-Besides directly manipulating a single record, a user may also open multiple records at once for 
-manipulation. Controlled by the MultipleSelect model, users may batch-add history entries to a
+Besides directly manipulating a single record, a user may also open multiple records at once.
+Controlled by the MultipleSelect model, users may batch-add history entries to a
 large number of parts and greatly reduce their workload. This interactivity is available from
 the view displaying search results.
 
@@ -783,9 +789,9 @@ desired Form model.
 
 \subsection{Views}
 The views have access to the Backbone.Events API and listen for changes in model attributes. If a change is detected,
-the view is rerendered. Interaction with elements in the user interface trigger events which are caught by the view and the appropriate
+the view is rerendered. Interaction with elements in the user interface triggers events which are caught by the view and the appropriate
 functions are run. To modify DBRecord and/or HistoryRecord models views pass messages to 
-RecordCollection or HistoryCollection which prescribed linking interactions between models.
+RecordCollection or HistoryCollection which prescribe linking interactions between models.
 
 The CollectionView class holds views for models stored in AbstractMediatorCollections. HistoryFormViews
 are held by a CollectionView, for instance. A tabbed interface is presented by TabbedPagesView,
