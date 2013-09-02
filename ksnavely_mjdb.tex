@@ -400,7 +400,7 @@ achieving the extreme radiopurity required for this rare decay search.
 
 \section{Introduction}
 \IEEEPARstart{D}{etecting} neutrinoless double-beta decay (\znbb) would prove that neutrinos are their own antiparticle,
-demonstrate that lepton number is not conserved, and may provide insight into
+demonstrate that Lepton number is not conserved, and may provide insight into
 the mass hierarchy of the neutrino family \cite{phillips_mj} \cite{mj_wilkerson} \cite{avignone_neutrinos}.
 The \textsc{Majorana Demonstrator} is part of a phased approach towards a tonne-scale search for \znbb\ in \ge76, with
 a background goal of $2.5\times10^{-4}$ counts $keV^{-1} t^{-1} y^{-1}$ \cite{mj_wilkerson} in the region of interest
@@ -409,16 +409,12 @@ The \textsc{Demonstrator}'s extreme radiopurity requirements and low energy thre
 matter candidates known as Weakly Interacting Massive Particles (WIMPs).
 
 Achieving this low background goal requires a multifaceted strategy including detector shielding, assembly in an ultra-clean environment,
-careful materials screening, and a comprehensive parts tracking effort.
-Recording part history is essential to realizing the \textsc{Demonstrator}'s background goal and controlling logistics.
-\textsc{Majorana} has developed a CouchDB  \cite{couchdb_guide} based parts tracking database (PTDB)
-for tracking parts used in the construction of the experiment. 
+and careful materials screening. A comprehensive parts tracking effort is employed by the \textsc{Majorana} collaboration, driven by a
+CouchDB  \cite{couchdb_guide} database and JavaScript web application, known as the Parts Tracking Databse (PTDB).
 Referencing part history provides an important quality assurance check during 
-construction. A part's history (cleaning, leaching, etc...) must be 
-understood before it can be integrated into production hardware. The information tracked
-to benefit \textsc{Majorana}'s physics goals also greatly benefits conventional logistics in an
-experiment which has thousands of individual components.
-
+construction. A part's history must be 
+understood before it can be integrated into production hardware. 
+The complete \textsc{Demonstrator} is composed of thousands of individual parts and the PTDB aids in controlling the experiment's logistics.
 
 To minimize backgrounds from cosmic radiation the \textsc{Demonstrator} is located deep underground
 at the 4850' level of the Sanford Underground Research Facility (SURF).
@@ -449,9 +445,14 @@ or aid in troubleshooting if a source of background is found within the experime
 Part history is also referenced during construction to ensure components meet quality requirements.
 
 \subsection{Logistics Overview}
-Most components in the \textsc{Demonstrator} are custom made by \textsc{Majorana}, and are designed
+Most components in the \textsc{Demonstrator} are custom made by \textsc{Majorana} and are designed
 to be as low-mass and radiopure as possible. 
 \textsc{Majorana} electroforms the worlds purest copper in its underground electroforming facility (Figure \ref{example_part} (a)), also at SURF \cite{mj_wilkerson}.
+
+Why Copper?
+
+What are the chief isotopes produced in it by comsic rays?
+
 To keep as much material from leaving the shielding of the mine as possible, \textsc{Majorana} also operates a clean 
 machine shop at the 4850' level. The material origin and manufacturing history (parent stock tree and machining operations) 
 of each part is recorded, as well as any storage, transportation, or other process a part undergoes.
@@ -461,13 +462,13 @@ Some parts are too large or small to be easily engraved, or are otherwise unsuit
 components are identified by metal stamps or labels. Groups of small identical parts are bagged together
 and a range of serial numbers is listed on the bag.
 
-The parent-child relationship of stock and parts or stock and smaller stock is also tracked
-within the PTDB (Steps (c), (d), and (e) in Figure \ref{example_part} result in children which would be treated as new parts).
-When a parent-child relationship is established the child inherits the parent record's material type. 
 There are many materials used in the \textsc{Demonstrator}, but the bulk of the mass of the \textsc{Demonstrator}'s components is copper.
 Steel, teflon, and other plastics are present in smaller amounts. 
 Ultra-pure underground electroformed copper is visually indistinguishable from commercial copper and so material
 tracking is vital.
+The parent-child relationship of stock and parts or stock and smaller stock is also tracked
+within the PTDB (Steps (c), (d), and (e) in Figure \ref{example_part} result in children which would be treated as new parts).
+When a parent-child relationship is established the child inherits the parent record's material type. 
 The parent-child relationship is strictly one to many. No part can have more than one parent, as the parent-child link
 represents a reducing process, such as machining parts or cutting cables. 
 
@@ -476,7 +477,7 @@ represents a reducing process, such as machining parts or cutting cables.
 \includegraphics[width=3.5in]{example_part}
 \caption{The life a part from commercial copper stock to finished assembly is illustrated above. Each smaller stock piece or part created from a
 parent stock piece receives a new serial number for tracking.
-Storage, transportation, and processes such as machining, cleaning, or acid etching are tracked for each part and
+Storage, transportation, and processes such as machining or cleaning are tracked for each part and
 referenced when parts are selected for use. When an assembly is created from completed parts 
 the components are linked to a new assembly record in the database.}
 \label{example_part}
@@ -489,29 +490,30 @@ important if, as in step (f) of Figure \ref{example_part}, parts must be taken a
 
 Machining a part irreversibly changes its structure. Many subtle details may differentiate
 two otherwise very similar looking parts. Tracking the machining date, machinist, and \textsc{Majorana} drawing number allows
-for ambiguities to be resolved when a component's history is called into question. The manufacture of Hollow Hex Rods (custom copper bolts), step (e) of Figure \ref{example_part},
-is one example -- the length of the Hollow Hex Rods is fine tuned for each type of Detector Unit used in \textsc{Majorana}.
+for ambiguities to be resolved when a component's history is called into question. 
+For instance, the length of a set of Hollow Hex Rods (custom copper bolts) is fine tuned for different Detector Units, and the 
+correct length Hollow Hex Rod must be used for assembly.
 
 Components used by \textsc{Majorana} go through many processes. Cleaning, for instance, is a complicated task for an ultra-low
 background experiment. There are many different cleaning processes a part may undergo and a part's cleaning history
-must be understood before integration into detector hardware. For example, history entries stored alongside part records in the PTDB
+must be verified before integration into detector hardware. For example, history entries stored alongside part records in the PTDB
 allow scientists to verify whether a part has been acid etched, ultrasonic cleaned, or wiped with ethanol/isopropanol.
 There are many other process types and not every type can be accounted for during application development. As such, any user can 
 easily add process types directly from the User Interface (UI). Some processes require an official \textsc{Majorana} procedure to be
 followed and entry of the procedure number is required.
 
 An object which is made from more than one individual
-part is known as an assembly. The PTDB represents such relationships and provides each assembly with its own serial number. A part can be a member of only one assembly,
+part is known as an assembly. The PTDB provides each assembly with its own serial number and records information about it.
+A part can be a member of only one assembly,
 and one assembly may be a component of another assembly.
-If a history entry is applied to an assembly, it is also applied to each component or sub\-assembly in the assembly tree. If a Cryostat receives
-a history entry, each Detector String, Detector Unit, and Hollow Hex Rod currently in the tree will receive the same entry.
+If a history entry is applied to an assembly, it is also applied to each component or sub\-assembly in the assembly tree. 
 
 The assembly types in \textsc{Majorana} are drawn directly from the project engineering CAD designs and represent logical 
 groupings of parts, such as Detector Units, Detector Strings, or Cryostats. 
 Some assemblies contain multiple identical parts such as the three Hollow Hex Rods in a Detector Unit.
 Each component is assigned a role number which correlates directly to the simulation geometry designed by \textsc{Majorana}. 
 
-By assigning each part an indivdual position number, abberant backgrounds can be examined through positional analysis in 
+By assigning each part an indivdual position number, abberant backgrounds can be examined through 
 simulation and the radioactive part identified without immediate deconstruction of an assembly, which is very costly in 
 terms of manpower and time. During the assembly of detector components detailed notes are kept in physical logbooks that are
 transcribed into an electronic logbook, and finally the assembly information is entered into the PTDB.
@@ -526,18 +528,11 @@ such as cosmogenic activation.
 \subsection{Parts Tracking Software Overview}
 A JavaScript based web application has been developed by \textsc{Majorana} as an easy-to-use tool for data-entry.
 Adopting modern programming techniques, using CouchDB, and leveraging libraries like JQuery and Backbone.js (see appendix for a complete list) allows the
-web application to be easily extendable and maintainable throughout the project lifetime. Calculation of
+web application to be easily extendable and maintainable throughout the project lifetime (see Figure \ref{simple_structure}). Calculation of
 activation rates is done with a small Python application which walks through history and part records in the database,
 adding exposure data.
 
 \subsubsection{CouchDB}
-CouchDB has an interface based on the HyperText Transfer Protocol (HTTP) Representational State Transfer (REST) model.
-This allows applications which run in the browser to mesh naturally with CouchDB.
-The REST model prescribes a client-server
-relationship in which state (database records for instance) is requested through an interface.
-HTTP is the interface of the web and interactions with CouchDB are handled with HTTP
-requests such as GET, PUT, POST, and DELETE. 
-
 Unlike Structured Query Language (SQL) databases, CouchDB stores information in JavaScript Object Notation (JSON) \cite{json}
 documents.
 JSON provides a human-readable
@@ -545,6 +540,12 @@ standard for data representation which is a subset of JavaScript syntax. Data ar
 literals which map key strings to values, which may be strings, numbers, arrays, or other object literals. 
 JSON parses naturally into JavaScript objects and other languages, such as Python, have easy-to-use
 JSON parsing libraries. 
+
+CouchDB has an interface based on HyperText Transfer Protocol (HTTP) requests.
+This allows applications which run in the browser to mesh naturally with CouchDB.
+HTTP is the interface of the web and interactions with CouchDB are handled with HTTP
+requests such as GET, PUT, POST, and DELETE. Information is queried using MapReduce
+views written in JavaScript \cite{couchdb_guide}.
 
 Each part, assembly, and history entry is represented by a JSON document in CouchDB. A relationship between these objects
 is established by storing the serial numbers of linked parts in the appropriate field. For example, in a parent-child relationship the parent record stores the serial numbers
