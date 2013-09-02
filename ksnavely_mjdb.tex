@@ -401,7 +401,7 @@ achieving the extreme radiopurity required for this rare decay search.
 \section{Introduction}
 \IEEEPARstart{D}{etecting} neutrinoless double-beta decay (\znbb) would prove that neutrinos are their own antiparticle,
 demonstrate that lepton number is not conserved, and may provide insight into
-the mass hiearchy of the neutrino family \cite{phillips_mj} \cite{mj_wilkerson} \cite{avignone_neutrinos}.
+the mass hierarchy of the neutrino family \cite{phillips_mj} \cite{mj_wilkerson} \cite{avignone_neutrinos}.
 The \textsc{Majorana Demonstrator} is part of a phased approach towards a tonne-scale search for \znbb\ in \ge76, with
 a background goal of $2.5\times10^{-4}$ counts $keV^{-1} t^{-1} y^{-1}$ \cite{mj_wilkerson} in the region of interest
 around the \znbb\ signal at 2039 keV.
@@ -452,7 +452,7 @@ Part history is also referenced during construction to ensure components meet qu
 Most components in the \textsc{Demonstrator} are custom made by \textsc{Majorana}, and are designed
 to be as low-mass and radiopure as possible. 
 \textsc{Majorana} electroforms the worlds purest copper in its underground electroforming facility (Figure \ref{example_part} (a)), also at SURF \cite{mj_wilkerson}.
-To keep as much material from ever leaving the shielding of the mine as possible, \textsc{Majorana} also operates a clean 
+To keep as much material from leaving the shielding of the mine as possible, \textsc{Majorana} also operates a clean 
 machine shop at the 4850' level. The material origin and manufacturing history (parent stock tree and machining operations) 
 of each part is recorded, as well as any storage, transportation, or other process a part undergoes.
 
@@ -509,7 +509,7 @@ a history entry, each Detector String, Detector Unit, and Hollow Hex Rod current
 The assembly types in \textsc{Majorana} are drawn directly from the project engineering CAD designs and represent logical 
 groupings of parts, such as Detector Units, Detector Strings, or Cryostats. 
 Some assemblies contain multiple identical parts such as the three Hollow Hex Rods in a Detector Unit.
-Each Hollow Hex Rod is assigned a role number which correlates directly to the simulation geometry designed by \textsc{Majorana}. 
+Each component is assigned a role number which correlates directly to the simulation geometry designed by \textsc{Majorana}. 
 
 By assigning each part an indivdual position number, abberant backgrounds can be examined through positional analysis in 
 simulation and the radioactive part identified without immediate deconstruction of an assembly, which is very costly in 
@@ -520,15 +520,15 @@ Organizing and tracking information about thousands of components is a
 challenge faced by many organizations. Providing a web interface for data entry and retrieval allows
 a non-expert user to interact with data stored in \textsc{Majorana}'s CouchDB. Any web browser becomes a tool which can
 be used to query information about a part's location or history. This greatly increases the efficiency of quality assurance
-checks compared to traditional electronic log books, and the structured data can be later analyzed to calculate information
+checks compared to traditional electronic log books, and the structured data can later be analyzed to calculate information
 such as cosmogenic activation.
 
 \subsection{Parts Tracking Software Overview}
 A JavaScript based web application has been developed by \textsc{Majorana} as an easy-to-use tool for data-entry.
 Adopting modern programming techniques, using CouchDB, and leveraging libraries like JQuery and Backbone.js (see appendix for a complete list) allows the
 web application to be easily extendable and maintainable throughout the project lifetime. Calculation of
-activation rates is done with a small Python application which walks through data entered into the web
-frontend and calculation results are pushed to the CouchDB database.
+activation rates is done with a small Python application which walks through history and part records in the database,
+adding exposure data.
 
 \subsubsection{CouchDB}
 CouchDB has an interface based on the HyperText Transfer Protocol (HTTP) Representational State Transfer (REST) model.
@@ -552,7 +552,7 @@ of its children in an array. The children all store the serial number of their p
 required information, such as a name, record creation and last update date, and a comments field. Parts and assemblies also hold an array for
 their linked history entry ids. 
 Parts have additional fields for relatives (assembly, parent, and children) as well as material type. Assemblies have information
-on the assembly type and an array for components. Each component in the array detailes its serial number and role number. Membership history is also tracked
+about the assembly type and an array for components. Each component in the array details its serial number and role number. Membership history is also tracked
 on assembly records with the serial number, whether the operation was to add or remove a component, as well as the date.
 
 The structure of history entry records varies based on the type of history entry. All history records have a field for the history type,
@@ -686,23 +686,19 @@ on the collections. They also listen for user-input and update models or message
 \label{simple_structure}
 \end{figure}
 
-The building blocks of the PTDB web application are the Backbone.Model subclasses which represent parts, 
-assemblies, and history entries. DBRecord models represent parts
-and assemblies and their attributes point to FormCollection instances. HistoryRecords provide an interface for manipulating 
-the storage, machining, transportation, or process records which may be linked to parts or assemblies. The Form model
-acts as the parent to a tree of subclasses which are the data-containers for the user interface presented by the PTDB.
+The data-entry web application is written completely in JavaScript, and is served from the same CouchDB instance
+which holds the data. An object-oriented style is used with a Model-View-Controller decomposition provided
+by the Backbone.js framework. Parts, assemblies, and history records are represented by models. They are contained
+in two singleton collections (see Figure \ref{simple_structure}) which act as mediators. Messages passed to 
+the mediators from views or models trigger inter-model linking such as adding a history entry to a part.
+The view objects listen to events from and update both the models and the user interface. Application level
+views listen for events from the mediating collections and create or destroy record views as needed. 
 
-Backbone.Collection objects aggregate multiple models and some, the AbstractMediatorCollection objects, support event notification
-which controls inter-model linking. FormCollection objects hold Form models and provide an API for generating JSON to be
-saved to the database.
-
-View objects which inherit from Backbone.View update the page content to present information to the user. They contain logic dealing with
-representation of data from DBRecords, HistoryRecords, and Form models. Events triggered by user interaction with the user interface cause 
-view functions to be executed, updating data stored in a model, passing messages to mediators, or simply manipulating the view.
-
-Other objects act like controllers in a Model-View-Controller decomposition, such as DBController, DBListController, Validator,
-and MJDBRouter. These are used to abstract interactions with CouchDB and add functionality such as data caching and validation. 
-The Backbone.Router subclass MJDBRouter provides a mapping from URI navigation to function execution. See Fig. \ref{simple_structure}
+Database interactions are abstracted by a singleton controller, enhancing error handling for database requests
+and providing functionality such as serial number generation and cloning. Other controllers handle data validation,
+route-based navigation, and data caching. The form-based data entry style of the application is made richer with a
+set of form models, views, and collections. They provide interactivity beyond the standard HTML forms and
+specify an API for generating JSON from the data they contain.
 
 \subsection{Models}
 The real-life items of interest in the parts tracking database are the parts and assemblies which compose
@@ -718,7 +714,7 @@ unfinished linking operations due to browser crash, closing the page, etc...), o
 which assembly a PartRecord or AssemblyRecord is a member of.
 
 As the goal of the PTDB is to present a rich interface for data entry, forms
-themselves have model and view representations (see Fig. \ref{models}). 
+themselves have model and view representations. 
 Form models contain the data and logic for presenting a rich user interface, but do not contain HTML/CSS or
 methods which manipulate the page content (these exist in the FormView class tree).
 The simplest type of form is a textbox and label pair. The basic Form model class stores data 
@@ -768,10 +764,20 @@ data entry during parts production easier, assembly members may not be cloned.
 
 \subsection{Collections}
 The tracking logic (linking relatives, assembly components, and history entries) is controlled
-by singletons which subclass the AbstractMediatorCollection class (see Fig. \ref{singletons}). This class is a Backbone.Collection
+by singletons which subclass the AbstractMediatorCollection class (see Figure \ref{singletons}). This class is a Backbone.Collection
 which has been extended with the Backbone.Events API, and acts a mediator between DBRecord (parts and assemblies) or
 HistoryRecord instances. The singletons are notified by events from models or views and carry out the needed
 linking operations.
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[height=3.75in]{Singletons}
+\caption{A structure diagram of important Collection singletons and their associated views. CollectionViews aggregate views for models in
+AbstractMediatorCollections. TabbedPagesView presents the tabbed page interface which is the primary point of interaction with users, and it
+does so by manipulating an internal CollectionView. HistoryCollection and RecordCollection inherit properties from AbstractMediatorCollection
+and act as mediators, controlling the logic that links relatives, assembly components, and history entries.}
+\label{singletons}
+\end{figure*}
 
 The AbstractMediatorCollection class also extends the
 Backbone.Collection.get API for ease of use. An option can be passed to the get method which
@@ -868,29 +874,6 @@ parts and materials tracking efforts like \textsc{Majorana}'s parts tracking dat
 The parts tracking database is a 
 key component of the \textsc{Demonstrator}'s radiopurity campaign and will help the collaboration achieve
 its goals of probing ultra-rare processes.
-
-\clearpage
-
-\begin{figure}[!p]
-\centering
-\includegraphics[height=3.75in]{Singletons}
-\caption{A structure diagram of important Collection singletons and their associated views. CollectionViews aggregate views for models in
-AbstractMediatorCollections. TabbedPagesView presents the tabbed page interface which is the primary point of interaction with users, and it
-does so by manipulating an internal CollectionView. HistoryCollection and RecordCollection inherit properties from AbstractMediatorCollection
-and act as mediators, controlling the logic that links relatives, assembly components, and history entries.}
-\label{singletons}
-\end{figure}
-
-\begin{figure}[!p]
-\centering
-\includegraphics[height=3.75in]{Models}
-\caption{The Form model inheritance tree. Each model has an attributes object containing the state of the model as well as the default
-view type to be used by the FormCollectionView instance which presents the model to the user. The tree of FormView objects closely mirrors
-the structure of the Form model tree.}
-\label{models}
-\end{figure}
-
-\clearpage
 
 % An example of a floating figure using the graphicx package.
 % Note that \label must occur AFTER (or within) \caption.
